@@ -479,21 +479,10 @@
     }
     .pa-hero-btn:hover { background: #334155; }
     .pa-hero-btn svg { width: 16px; height: 16px; }
-    .pa-hero-success-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--text);
-      margin-bottom: 6px;
-    }
-    .pa-hero-success-sub { font-size: 13px; color: var(--text-secondary); margin: 0 0 0 30px; }
-    .pa-hero-logos-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.2px; color: var(--text-tertiary); margin-bottom: 14px; }
+    .pa-hero-action-row { display: flex; flex-wrap: wrap; align-items: center; gap: 18px; }
+    .pa-hero-sep { width: 1px; height: 22px; background: var(--border); flex-shrink: 0; }
     .pa-hero-logos-row { display: flex; flex-wrap: wrap; gap: 16px 24px; align-items: center; }
     .pa-hero-logos-row img { height: 22px; width: auto; display: block; opacity: 0.8; }
-    .pa-hero-logos-row.is-success { display: grid; grid-template-columns: repeat(5, auto); gap: 14px; justify-content: center; align-items: center; }
-    .pa-hero-logos-row.is-success img { height: 42px; width: auto; display: block; background: #fff; padding: 10px; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
     .img-fallback {
       display: inline-flex;
       align-items: center;
@@ -2543,14 +2532,14 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      cursor: pointer;
       flex: 1;
       min-width: 0;
     }
-    .bulk-platform-toggle input[type="checkbox"] {
-      width: 16px;
-      height: 16px;
-      accent-color: var(--text);
+    .bulk-platform-check {
+      color: var(--text-tertiary);
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1;
       flex-shrink: 0;
     }
     .bulk-platform-name {
@@ -2586,22 +2575,6 @@
     .bulk-terms-body p:last-child {
       margin-bottom: 0;
     }
-    .bulk-select-all-btn {
-      background: none;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 7px 14px;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text);
-      cursor: pointer;
-      font-family: inherit;
-      transition: border-color 0.15s, color 0.15s;
-    }
-    .bulk-select-all-btn:hover {
-      border-color: var(--text);
-    }
-
     /* Pages List */
     /* ==============================
        PAGES TABLE
@@ -3351,32 +3324,22 @@
           <div class="pa-hero-copy">
             <div class="pa-hero-title" id="paHeroTitle">Reach more listeners on major platforms</div>
             <p class="pa-hero-body" id="paHeroBody">Submit your podcast to major platforms with one click.</p>
-            <div id="paHeroAction">
-              <button type="button" class="pa-hero-btn" onclick="openBulkSubmitModal()">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg>
-                One-click submit
-              </button>
-            </div>
-            <div id="paHeroSuccess" style="display:none;">
-              <div class="pa-hero-success-row">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;"><circle cx="12" cy="12" r="11" fill="#22c55e"/><polyline points="16.5 7.5 10 16.5 6.5 12" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                <span>Your podcast is on its way!</span>
+            <div class="pa-hero-action-row" id="paHeroActionRow">
+              <div id="paHeroAction">
+                <button type="button" class="pa-hero-btn" onclick="openBulkSubmitModal()">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg>
+                  One-click submit
+                </button>
               </div>
-              <p class="pa-hero-success-sub">Your podcast may take 24 hours or longer to appear across platforms.</p>
-            </div>
-          </div>
-          <div class="pa-hero-logos">
-            <span class="pa-hero-logos-label" id="paHeroLogosLabel">Distribute to</span>
-            <div class="pa-hero-logos-row" id="paHeroLogosRow">
-              <img src="https://pbcdn1.podbean.com/fs1/site/images/admin5/spotify.png" alt="Spotify">
-              <img src="https://pbcdn1.podbean.com/fs1/site/images/admin5/youtube_logo.png" alt="YouTube">
-              <img src="https://pbcdn1.podbean.com/fs1/site/images/admin5/podbean-app.png" alt="Podbean App">
-              <img src="https://pbcdn1.podbean.com/fs1/site/images/admin5/AmazonMusic.png" alt="Amazon Music">
-              <img src="https://pbcdn1.podbean.com/fs1/site/images/admin5/iHeartRadio.png" alt="iHeartRadio">
-              <img src="https://pbcdn1.podbean.com/fs1/site/images/admin5/PlayerFM.png" alt="Player FM">
-              <img src="https://pbcdn1.podbean.com/fs1/site/images/admin5/Podchaser.webp" alt="Podchaser">
-              <img src="https://pbcdn1.podbean.com/fs1/site/images/admin5/BoomPlay.png" alt="Boomplay">
-              <img src="https://pbcdn1.podbean.com/fs1/site/images/admin5/ListenNotes.png" alt="Listen Notes">
+              <span class="pa-hero-sep" aria-hidden="true"></span>
+              <div class="pa-hero-logos-row" id="paHeroLogosRow">
+                <img src="https://pbcdn1.podbean.com/fs1/site/images/admin5/spotify.png" alt="Spotify">
+                <img src="https://pbcdn1.podbean.com/fs1/site/images/admin5/AmazonMusic.png" alt="Amazon Music">
+                <img src="https://pbcdn1.podbean.com/fs1/site/images/admin5/iHeartRadio.png" alt="iHeartRadio">
+                <img src="https://pbcdn1.podbean.com/fs1/site/images/admin5/PlayerFM.png" alt="Player FM">
+                <img src="https://pbcdn1.podbean.com/fs1/site/images/admin5/Podchaser.webp" alt="Podchaser">
+                <img src="https://pbcdn1.podbean.com/fs1/site/images/admin5/BoomPlay.png" alt="Boomplay">
+              </div>
             </div>
           </div>
         </div>
@@ -5661,10 +5624,9 @@
     }
 
     // ===== One-click submit to all eligible platforms =====
-    // Opens the bulk-submit modal: one checkbox per platform (expandable terms)
-    // plus a Select all shortcut.
+    // Opens the bulk-submit modal: every eligible platform is included and its
+    // terms can be reviewed; a single Confirm submits to all of them at once.
     function openBulkSubmitModal() {
-      document.querySelectorAll('#bulkSubmitModal .bulk-platform-check').forEach(function(c) { c.checked = false; });
       document.querySelectorAll('#bulkSubmitModal .bulk-terms-body').forEach(function(b) { b.style.display = 'none'; });
       document.querySelectorAll('#bulkSubmitModal .bulk-terms-toggle-label').forEach(function(l) { l.textContent = 'View terms'; });
       document.querySelectorAll('#bulkSubmitModal .caret').forEach(function(c) { c.textContent = '▾'; });
@@ -5674,7 +5636,6 @@
         var src = document.getElementById('amazonAgreementSource');
         box.innerHTML = src ? src.innerHTML : 'Amazon Music/Audible Content License Agreement text.';
       }
-      checkBulkSubmitReady();
       var modal = document.getElementById('bulkSubmitModal');
       if (modal) modal.classList.add('show');
     }
@@ -5698,44 +5659,6 @@
       }
     }
 
-    // Select all / clear all platform checkboxes in one click.
-    function toggleBulkSelectAll() {
-      var allChecked = true;
-      document.querySelectorAll('#bulkSubmitModal .bulk-platform-check').forEach(function(c) {
-        if (!c.checked) allChecked = false;
-      });
-      var target = !allChecked;
-      document.querySelectorAll('#bulkSubmitModal .bulk-platform-check').forEach(function(c) { c.checked = target; });
-      checkBulkSubmitReady();
-    }
-
-    // Keeps the Select all button label in sync with the checkboxes.
-    function updateBulkSelectAllLabel() {
-      var btn = document.getElementById('bulkSelectAllBtn');
-      if (!btn) return;
-      var allChecked = true;
-      document.querySelectorAll('#bulkSubmitModal .bulk-platform-check').forEach(function(c) {
-        if (!c.checked) allChecked = false;
-      });
-      btn.textContent = allChecked ? 'Clear all' : 'Select all';
-    }
-
-    // Enables Confirm Submit only when every platform checkbox is checked.
-    function checkBulkSubmitReady() {
-      var btn = document.getElementById('bulkSubmitConfirmBtn');
-      if (!btn) return;
-
-      var allChecked = true;
-      document.querySelectorAll('#bulkSubmitModal .bulk-platform-check').forEach(function(c) {
-        if (!c.checked) allChecked = false;
-      });
-
-      btn.disabled = !allChecked;
-
-      // Keep the Select all button label in sync with the individual checkboxes.
-      updateBulkSelectAllLabel();
-    }
-
     // Submits every platform Podbean handles on the user's behalf in one action.
     // Skips the host platform (Podbean App) and self-submit platforms (YouTube, Listen Notes).
     function confirmBulkSubmit() {
@@ -5756,28 +5679,17 @@
       }
     }
 
-    // Switches the hero card between its action state (big button) and its
-    // success state (all eligible platforms submitted), based on current state.
+    // Hides the hero card entirely once every eligible platform has been
+    // submitted — the per-platform list below already shows each status.
     function refreshHeroState() {
       var hero = document.getElementById('paHeroCard');
       if (!hero) return;
-      var action = document.getElementById('paHeroAction');
-      var success = document.getElementById('paHeroSuccess');
-      var body = document.getElementById('paHeroBody');
-      var title = document.getElementById('paHeroTitle');
-      var label = document.getElementById('paHeroLogosLabel');
-      var logosRow = document.getElementById('paHeroLogosRow');
       var submittedCount = 0;
       bulkSubmitKeys.forEach(function(key) {
         if (distSubmitted[key]) submittedCount++;
       });
       var allDone = submittedCount >= bulkSubmitKeys.length;
-      if (title) title.style.display = allDone ? 'none' : 'block';
-      if (label) label.style.display = allDone ? 'none' : 'block';
-      if (action) action.style.display = allDone ? 'none' : 'block';
-      if (body) body.style.display = allDone ? 'none' : 'block';
-      if (success) success.style.display = allDone ? 'block' : 'none';
-      if (logosRow) logosRow.classList.toggle('is-success', allDone);
+      hero.style.display = allDone ? 'none' : 'flex';
     }
 
     // ===== Dot menu for podcast-apps-2 =====
@@ -8497,14 +8409,14 @@
   <div class="confirm-overlay" id="bulkSubmitModal">
     <div class="confirm-dialog bulk-dialog">
       <div class="confirm-title" style="text-align:left;margin-bottom:6px;">One-click submit</div>
-      <div class="confirm-desc" style="text-align:left;font-size:14px;margin-bottom:18px;">Podbean will submit your podcast to the platforms below on your behalf. Check each platform to agree to its terms, or use Select all at the bottom.</div>
+      <div class="confirm-desc" style="text-align:left;font-size:14px;margin-bottom:18px;">Podbean will submit your podcast to all the platforms below. Review the terms for each platform, then confirm to submit.</div>
 
       <div class="bulk-section">
         <div class="bulk-platform-head">
-          <label class="bulk-platform-toggle">
-            <input type="checkbox" class="bulk-platform-check" onchange="checkBulkSubmitReady()">
+          <div class="bulk-platform-toggle">
+            <span class="bulk-platform-check" aria-hidden="true">✓</span>
             <span class="bulk-platform-name">Spotify</span>
-          </label>
+          </div>
           <button type="button" class="bulk-terms-toggle" onclick="toggleBulkTerms('bulkTermsSpotify', this)"><span class="bulk-terms-toggle-label">View terms</span> <span class="caret">▾</span></button>
         </div>
         <div class="bulk-terms-body" id="bulkTermsSpotify" style="display:none;">
@@ -8516,10 +8428,10 @@
 
       <div class="bulk-section">
         <div class="bulk-platform-head">
-          <label class="bulk-platform-toggle">
-            <input type="checkbox" class="bulk-platform-check" onchange="checkBulkSubmitReady()">
+          <div class="bulk-platform-toggle">
+            <span class="bulk-platform-check" aria-hidden="true">✓</span>
             <span class="bulk-platform-name">Amazon Music / Audible</span>
-          </label>
+          </div>
           <button type="button" class="bulk-terms-toggle" onclick="toggleBulkTerms('bulkTermsAmazon', this)"><span class="bulk-terms-toggle-label">View terms</span> <span class="caret">▾</span></button>
         </div>
         <div class="bulk-terms-body" id="bulkTermsAmazon" style="display:none;">
@@ -8530,10 +8442,10 @@
 
       <div class="bulk-section">
         <div class="bulk-platform-head">
-          <label class="bulk-platform-toggle">
-            <input type="checkbox" class="bulk-platform-check" onchange="checkBulkSubmitReady()">
+          <div class="bulk-platform-toggle">
+            <span class="bulk-platform-check" aria-hidden="true">✓</span>
             <span class="bulk-platform-name">iHeartRadio</span>
-          </label>
+          </div>
           <button type="button" class="bulk-terms-toggle" onclick="toggleBulkTerms('bulkTermsIheart', this)"><span class="bulk-terms-toggle-label">View terms</span> <span class="caret">▾</span></button>
         </div>
         <div class="bulk-terms-body" id="bulkTermsIheart" style="display:none;">
@@ -8548,10 +8460,10 @@
 
       <div class="bulk-section">
         <div class="bulk-platform-head">
-          <label class="bulk-platform-toggle">
-            <input type="checkbox" class="bulk-platform-check" onchange="checkBulkSubmitReady()">
+          <div class="bulk-platform-toggle">
+            <span class="bulk-platform-check" aria-hidden="true">✓</span>
             <span class="bulk-platform-name">Player FM</span>
-          </label>
+          </div>
           <button type="button" class="bulk-terms-toggle" onclick="toggleBulkTerms('bulkTermsPlayerfm', this)"><span class="bulk-terms-toggle-label">View terms</span> <span class="caret">▾</span></button>
         </div>
         <div class="bulk-terms-body" id="bulkTermsPlayerfm" style="display:none;">
@@ -8563,10 +8475,10 @@
 
       <div class="bulk-section">
         <div class="bulk-platform-head">
-          <label class="bulk-platform-toggle">
-            <input type="checkbox" class="bulk-platform-check" onchange="checkBulkSubmitReady()">
+          <div class="bulk-platform-toggle">
+            <span class="bulk-platform-check" aria-hidden="true">✓</span>
             <span class="bulk-platform-name">Podchaser</span>
-          </label>
+          </div>
           <button type="button" class="bulk-terms-toggle" onclick="toggleBulkTerms('bulkTermsPodchaser', this)"><span class="bulk-terms-toggle-label">View terms</span> <span class="caret">▾</span></button>
         </div>
         <div class="bulk-terms-body" id="bulkTermsPodchaser" style="display:none;">
@@ -8578,10 +8490,10 @@
 
       <div class="bulk-section">
         <div class="bulk-platform-head">
-          <label class="bulk-platform-toggle">
-            <input type="checkbox" class="bulk-platform-check" onchange="checkBulkSubmitReady()">
+          <div class="bulk-platform-toggle">
+            <span class="bulk-platform-check" aria-hidden="true">✓</span>
             <span class="bulk-platform-name">Boomplay</span>
-          </label>
+          </div>
           <button type="button" class="bulk-terms-toggle" onclick="toggleBulkTerms('bulkTermsBoomplay', this)"><span class="bulk-terms-toggle-label">View terms</span> <span class="caret">▾</span></button>
         </div>
         <div class="bulk-terms-body" id="bulkTermsBoomplay" style="display:none;">
@@ -8591,12 +8503,8 @@
         </div>
       </div>
 
-      <div style="margin-bottom:12px;">
-        <button type="button" class="bulk-select-all-btn" id="bulkSelectAllBtn" onclick="toggleBulkSelectAll()">Select all</button>
-      </div>
-
       <div class="confirm-actions" style="margin-top:10px;">
-        <button class="confirm-btn confirm-btn-primary" id="bulkSubmitConfirmBtn" onclick="confirmBulkSubmit()" disabled>Confirm Submit</button>
+        <button class="confirm-btn confirm-btn-primary" id="bulkSubmitConfirmBtn" onclick="confirmBulkSubmit()">Confirm Submit</button>
         <button class="confirm-btn confirm-btn-secondary" onclick="closeBulkSubmitModal()">Cancel</button>
       </div>
     </div>
