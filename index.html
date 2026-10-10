@@ -460,8 +460,7 @@
       flex-direction: column;
       gap: 16px;
     }
-    .pa-hero-title { font-size: 22px; font-weight: 700; line-height: 1.3; margin-bottom: 4px; color: var(--text); }
-    .pa-hero-body { font-size: 15px; line-height: 1.5; color: var(--text-secondary); margin: 0 0 16px; }
+    .pa-hero-title { font-size: 22px; font-weight: 700; line-height: 1.3; margin-bottom: 14px; color: var(--text); }
     .pa-hero-btn {
       display: inline-flex;
       align-items: center;
@@ -3322,8 +3321,7 @@
         <!-- Hero: one-click distribution -->
         <div class="pa-hero" id="paHeroCard">
           <div class="pa-hero-copy">
-            <div class="pa-hero-title" id="paHeroTitle">Reach more listeners on major platforms</div>
-            <p class="pa-hero-body" id="paHeroBody">Submit your podcast to major platforms with one click.</p>
+            <div class="pa-hero-title">Submit your podcast to major platforms with one click.</div>
             <div class="pa-hero-action-row" id="paHeroActionRow">
               <div id="paHeroAction">
                 <button type="button" class="pa-hero-btn" onclick="openBulkSubmitModal()">
@@ -3341,6 +3339,17 @@
                 <img src="https://pbcdn1.podbean.com/fs1/site/images/admin5/BoomPlay.png" alt="Boomplay">
               </div>
             </div>
+          </div>
+        </div>
+
+        <!-- Inline confirmation after one-click submit -->
+        <div id="bulkSubmitBanner" style="display:none;align-items:flex-start;gap:12px;padding:14px 16px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;margin-bottom:16px;">
+          <div style="width:32px;height:32px;border-radius:8px;background:#22c55e;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          </div>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:2px;" id="bulkSubmitBannerTitle">Your podcast is on its way!</div>
+            <div style="font-size:13px;color:var(--text-secondary);line-height:1.6;">We've submitted your podcast for you. It may take 24 hours or longer to appear on each platform — track each platform's status below.</div>
           </div>
         </div>
 
@@ -5627,6 +5636,13 @@
     // Opens the bulk-submit modal: every eligible platform is included and its
     // terms can be reviewed; a single Confirm submits to all of them at once.
     function openBulkSubmitModal() {
+      // Audio-only platforms need an audio feed. If the feed has video but
+      // MP3-for-video is off, gate the one-click flow behind the same modal used
+      // for individual audio-only submits, then resume into the bulk modal.
+      if (feedHasVideo && !mp3ForVideoEnabled) {
+        openMp3GateModal('bulk');
+        return;
+      }
       document.querySelectorAll('#bulkSubmitModal .bulk-terms-body').forEach(function(b) { b.style.display = 'none'; });
       document.querySelectorAll('#bulkSubmitModal .bulk-terms-toggle-label').forEach(function(l) { l.textContent = 'View terms'; });
       document.querySelectorAll('#bulkSubmitModal .caret').forEach(function(c) { c.textContent = '▾'; });
@@ -5673,10 +5689,23 @@
       closeBulkSubmitModal();
       if (count > 0) {
         renderDistList();
+        showBulkSubmitBanner(count);
         showToast('Submitted to ' + count + ' platform' + (count > 1 ? 's' : ''));
       } else {
         showToast('All platforms are already submitted');
       }
+    }
+
+    // Persistent inline confirmation after a one-click submit, shown in place of
+    // the hero card (which collapses once every platform is submitted).
+    function showBulkSubmitBanner(count) {
+      var banner = document.getElementById('bulkSubmitBanner');
+      if (!banner) return;
+      var title = document.getElementById('bulkSubmitBannerTitle');
+      if (title) {
+        title.textContent = 'Submitted to ' + count + ' platform' + (count > 1 ? 's' : '');
+      }
+      banner.style.display = 'flex';
     }
 
     // Hides the hero card entirely once every eligible platform has been
@@ -6248,6 +6277,7 @@
       if (key === 'spotify') submitSpotify();
       else if (key === 'amazon-music') submitAmazon();
       else if (key === 'iheartradio') submitIheartRadio();
+      else if (key === 'bulk') openBulkSubmitModal();
     }
 
     function cancelSpotifyAction() {
@@ -8409,7 +8439,7 @@
   <div class="confirm-overlay" id="bulkSubmitModal">
     <div class="confirm-dialog bulk-dialog">
       <div class="confirm-title" style="text-align:left;margin-bottom:6px;">One-click submit</div>
-      <div class="confirm-desc" style="text-align:left;font-size:14px;margin-bottom:18px;">Podbean will submit your podcast to all the platforms below. Review the terms for each platform, then confirm to submit.</div>
+      <div class="confirm-desc" style="text-align:left;font-size:14px;margin-bottom:12px;">Podbean will submit your podcast to all the platforms below. Review each platform's terms before you confirm.</div>
 
       <div class="bulk-section">
         <div class="bulk-platform-head">
@@ -8503,7 +8533,9 @@
         </div>
       </div>
 
-      <div class="confirm-actions" style="margin-top:10px;">
+      <div style="text-align:left;font-size:12px;line-height:1.6;color:var(--text-secondary);margin-bottom:12px;">By clicking <strong>Confirm Submit</strong>, you agree to <a class="terms-inline" target="_blank" href="https://www.podbean.com/podbean-terms">Podbean&rsquo;s Terms of Service</a> and to each platform&rsquo;s terms and content requirements.</div>
+
+      <div class="confirm-actions" style="margin-top:0;">
         <button class="confirm-btn confirm-btn-primary" id="bulkSubmitConfirmBtn" onclick="confirmBulkSubmit()">Confirm Submit</button>
         <button class="confirm-btn confirm-btn-secondary" onclick="closeBulkSubmitModal()">Cancel</button>
       </div>
