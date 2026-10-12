@@ -3241,13 +3241,39 @@
 
     /* Embed Player: filter option sections */
     .ep-filter-option {
-      margin-bottom: 4px;
+      margin: 2px 0 6px;
+      padding-left: 16px;
+      border-left: 2px solid var(--border);
     }
-    .ep-filter-tags {
+    .ep-filter-option .ep-row-item {
+      padding: 9px 0;
+    }
+    .ep-filter-option .ep-row-label {
       font-size: 14px;
-      color: var(--text-tertiary);
-      padding: 10px 8px;
+      color: var(--text-secondary);
+      min-width: 92px;
     }
+
+    /* Embed Player: tags multi-select dropdown */
+    .ep-ms { position: relative; padding: 6px 0 2px; }
+    .ep-ms-btn { width:100%; display:flex; align-items:center; justify-content:space-between; gap:8px; padding:8px 12px; border:1px solid var(--border); border-radius:8px; background:#fff; font-size:14px; font-family:inherit; color:var(--text); cursor:pointer; text-align:left; box-sizing:border-box; }
+    .ep-ms-btn:hover { border-color:#cbd5e1; }
+    .ep-ms-btn.open { border-color: var(--text); }
+    .ep-ms-val { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .ep-ms-val.placeholder { color: var(--text-tertiary); }
+    .ep-ms-caret { flex-shrink:0; width:12px; height:8px; }
+    .ep-ms-panel { position:absolute; top:calc(100% + 4px); left:0; right:0; z-index:30; background:#fff; border:1px solid var(--border); border-radius:10px; box-shadow:0 10px 28px rgba(15,23,42,.13); padding:8px; }
+    .ep-ms-search { width:100%; padding:7px 10px; border:1px solid var(--border); border-radius:7px; font-size:13px; font-family:inherit; outline:none; margin-bottom:6px; box-sizing:border-box; }
+    .ep-ms-search:focus { border-color: var(--text); }
+    .ep-ms-list { max-height:186px; overflow-y:auto; display:flex; flex-direction:column; gap:1px; }
+    .ep-ms-opt { display:flex; align-items:center; gap:8px; padding:6px 8px; border-radius:6px; cursor:pointer; font-size:13.5px; }
+    .ep-ms-opt:hover { background:#f8fafc; }
+    .ep-ms-opt input { accent-color: var(--primary); width:15px; height:15px; margin:0; cursor:pointer; flex-shrink:0; }
+    .ep-ms-opt .cnt { margin-left:auto; font-size:11.5px; color:var(--text-tertiary); font-variant-numeric:tabular-nums; }
+    .ep-ms-empty { padding:9px 8px; font-size:12.5px; color:var(--text-tertiary); }
+    .ep-ms-foot { border-top:1px solid var(--border); margin-top:6px; padding-top:7px; display:flex; justify-content:space-between; align-items:center; }
+    .ep-ms-clear { color:var(--primary); cursor:pointer; background:none; border:0; font:inherit; font-size:12px; padding:0; }
+    .ep-ms-count { font-size:12px; color:var(--text-tertiary); }
     .ep-swatch-section {
       padding: 12px 0;
     }
@@ -5120,11 +5146,21 @@
               <div class="ep-row-label">Episode Filter</div>
               <div class="ep-row-control select-wrap">
                 <select id="epFilters" onchange="onEpisodeFilterChange()">
-                  <option value="all">All</option>
+                  <option value="latest">Latest N Episodes</option>
+                  <option value="earliest">Earliest N Episodes</option>
                   <option value="publish_time">Publish Time</option>
                   <option value="season">Season NO.</option>
                   <option value="tags">Tags</option>
                 </select>
+              </div>
+            </div>
+
+            <div id="epFilterNumEpisodes" class="ep-filter-option">
+              <div class="ep-row-item">
+                <div class="ep-row-label">No. of Episodes</div>
+                <div class="ep-row-control">
+                  <input type="number" id="epNumEpisodes" value="10" min="1" max="200" onchange="updatePlayer()">
+                </div>
               </div>
             </div>
 
@@ -5154,17 +5190,10 @@
                 </div>
               </div>
             </div>
-            <div id="epFilterTags" style="display:none;" class="ep-filter-option ep-filter-tags">
-              You haven't set <a href="https://apps.podbean.org/services/appDetail/id/JESUES5C72" target="_blank" style="color:var(--primary);text-decoration:underline;">episode tags</a> yet.
+            <div id="epFilterTags" style="display:none;" class="ep-filter-option">
+              <div id="epTagPick"></div>
             </div>
 
-            <!-- No. of Episodes -->
-            <div class="ep-row-item">
-              <div class="ep-row-label">No. of Episodes</div>
-              <div class="ep-row-control">
-                <input type="number" id="epNumEpisodes" value="10" min="1" max="200" onchange="updatePlayer()">
-              </div>
-            </div>
             <div class="ep-row-item">
               <div class="ep-row-label">Display Order</div>
               <div class="ep-row-control select-wrap">
@@ -8071,19 +8100,21 @@
 
     // ===== Episode data for visual player preview =====
     var epData = [
-      { title: 'The Future of AI in Everyday Life', date: 'Jun 22, 2026', duration: '34:15', status: 'published', num: 12, pubDate: '2026-06-22', season: 1 },
-      { title: 'Interview with Startup Founders', date: 'Jun 15, 2026', duration: '42:08', status: 'published', num: 11, pubDate: '2026-06-15', season: 1 },
-      { title: 'Understanding Blockchain Technology', date: 'Jun 8, 2026', duration: '28:44', status: 'published', num: 10, pubDate: '2026-06-08', season: 1 },
-      { title: 'Healthy Living Tips for Busy Professionals', date: 'Jun 1, 2026', duration: '31:22', status: 'published', num: 9, pubDate: '2026-06-01', season: 1 },
-      { title: 'Deep Dive: Climate Change Solutions', date: 'May 25, 2026', duration: '45:00', status: 'published', num: 8, pubDate: '2026-05-25', season: 1 },
-      { title: 'Remote Work Best Practices', date: 'May 18, 2026', duration: '26:37', status: 'published', num: 7, pubDate: '2026-05-18', season: 1 },
-      { title: 'Exploring Space: The Next Frontier', date: 'May 11, 2026', duration: '38:51', status: 'published', num: 6, pubDate: '2026-05-11', season: 1 },
-      { title: 'Mental Health Awareness Special', date: 'May 4, 2026', duration: '52:10', status: 'scheduled', num: 5, pubDate: '2026-05-04', season: 2 },
-      { title: 'Cryptocurrency Market Trends', date: 'Apr 27, 2026', duration: '29:45', status: 'scheduled', num: 4, pubDate: '2026-04-27', season: 2 },
-      { title: 'The Art of Storytelling in Podcasting', date: 'Apr 20, 2026', duration: '33:20', status: 'draft', num: 3, pubDate: '2026-04-20', season: 2 },
-      { title: 'Behind the Scenes: Episode Production', date: 'Apr 13, 2026', duration: '25:15', status: 'draft', num: 2 },
-      { title: 'Welcome to Our Podcast', date: 'Apr 6, 2026', duration: '18:30', status: 'draft', num: 1 }
+      { title: 'The Future of AI in Everyday Life', date: 'Jun 22, 2026', duration: '34:15', status: 'published', num: 12, pubDate: '2026-06-22', season: 1, tags: ['Technology','Science'] },
+      { title: 'Interview with Startup Founders', date: 'Jun 15, 2026', duration: '42:08', status: 'published', num: 11, pubDate: '2026-06-15', season: 1, tags: ['Business'] },
+      { title: 'Understanding Blockchain Technology', date: 'Jun 8, 2026', duration: '28:44', status: 'published', num: 10, pubDate: '2026-06-08', season: 1, tags: ['Technology','Business'] },
+      { title: 'Healthy Living Tips for Busy Professionals', date: 'Jun 1, 2026', duration: '31:22', status: 'published', num: 9, pubDate: '2026-06-01', season: 1, tags: ['Health'] },
+      { title: 'Deep Dive: Climate Change Solutions', date: 'May 25, 2026', duration: '45:00', status: 'published', num: 8, pubDate: '2026-05-25', season: 1, tags: ['Science','Culture'] },
+      { title: 'Remote Work Best Practices', date: 'May 18, 2026', duration: '26:37', status: 'published', num: 7, pubDate: '2026-05-18', season: 1, tags: ['Business','Culture'] },
+      { title: 'Exploring Space: The Next Frontier', date: 'May 11, 2026', duration: '38:51', status: 'published', num: 6, pubDate: '2026-05-11', season: 1, tags: ['Science'] },
+      { title: 'Mental Health Awareness Special', date: 'May 4, 2026', duration: '52:10', status: 'scheduled', num: 5, pubDate: '2026-05-04', season: 2, tags: ['Health','Culture'] },
+      { title: 'Cryptocurrency Market Trends', date: 'Apr 27, 2026', duration: '29:45', status: 'scheduled', num: 4, pubDate: '2026-04-27', season: 2, tags: ['Technology','Business'] },
+      { title: 'The Art of Storytelling in Podcasting', date: 'Apr 20, 2026', duration: '33:20', status: 'draft', num: 3, pubDate: '2026-04-20', season: 2, tags: ['Culture'] },
+      { title: 'Behind the Scenes: Episode Production', date: 'Apr 13, 2026', duration: '25:15', status: 'draft', num: 2, tags: ['Business'] },
+      { title: 'Welcome to Our Podcast', date: 'Apr 6, 2026', duration: '18:30', status: 'draft', num: 1, tags: [] }
     ];
+    var EP_TAGS = ['Technology', 'Business', 'Health', 'Science', 'Culture'];
+    var epSelectedTags = [];
 
     // ===== Embed Player: Customization Overlay =====
     var epDirty = false;
@@ -8190,12 +8221,16 @@
       document.getElementById('epShare').value = 'Show';
       document.getElementById('epDownload').value = 'Show';
       document.getElementById('epLogoLink').value = 'Episode page';
-      document.getElementById('epFilters').value = 'all';
+      document.getElementById('epFilters').value = 'latest';
+      document.getElementById('epFilterNumEpisodes').style.display = 'block';
       document.getElementById('epFilterPublishTime').style.display = 'none';
       document.getElementById('epFilterSeason').style.display = 'none';
       document.getElementById('epFilterTags').style.display = 'none';
       document.getElementById('epNumEpisodes').value = '10';
       document.getElementById('epDisplayOrder').value = 'Episodic (From New to Old)';
+      epSelectedTags = [];
+      updateEpTagSummary();
+      renderEpTagOptions();
 
       updatePlayer();
       markEpDirty();
@@ -8218,10 +8253,120 @@
 
     function onEpisodeFilterChange() {
       var val = document.getElementById('epFilters').value;
+      document.getElementById('epFilterNumEpisodes').style.display = (val === 'latest' || val === 'earliest') ? 'block' : 'none';
       document.getElementById('epFilterPublishTime').style.display = val === 'publish_time' ? 'block' : 'none';
       document.getElementById('epFilterSeason').style.display = val === 'season' ? 'block' : 'none';
       document.getElementById('epFilterTags').style.display = val === 'tags' ? 'block' : 'none';
       updatePlayer();
+    }
+
+    // ===== Tags multi-select dropdown =====
+    function epTagCount(t) {
+      var c = 0;
+      epData.forEach(function(e) { if (e.tags && e.tags.indexOf(t) >= 0) c++; });
+      return c;
+    }
+
+    function closeEpTagPanel() {
+      var p = document.getElementById('epMsPanel');
+      if (p) p.classList.add('hidden');
+      var b = document.getElementById('epMsBtn');
+      if (b) b.classList.remove('open');
+    }
+
+    function buildEpTagPick() {
+      var el = document.getElementById('epTagPick');
+      if (!el) return;
+      el.innerHTML =
+        '<div class="ep-ms">' +
+          '<button type="button" class="ep-ms-btn" id="epMsBtn">' +
+            '<span class="ep-ms-val placeholder" id="epMsVal"></span>' +
+            '<svg class="ep-ms-caret" viewBox="0 0 12 8" fill="none"><path d="M1 1.5L6 6.5L11 1.5" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+          '</button>' +
+          '<div class="ep-ms-panel hidden" id="epMsPanel">' +
+            '<input type="text" class="ep-ms-search" id="epMsSearch" placeholder="Search tags">' +
+            '<div class="ep-ms-list" id="epMsList"></div>' +
+            '<div class="ep-ms-foot">' +
+              '<button type="button" class="ep-ms-clear" id="epMsClear">Clear</button>' +
+              '<span class="ep-ms-count" id="epMsCount"></span>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+
+      document.getElementById('epMsBtn').addEventListener('click', function(e) {
+        e.stopPropagation();
+        var panel = document.getElementById('epMsPanel');
+        var wasOpen = !panel.classList.contains('hidden');
+        closeEpTagPanel();
+        if (!wasOpen) {
+          panel.classList.remove('hidden');
+          this.classList.add('open');
+          var s = document.getElementById('epMsSearch');
+          s.value = '';
+          renderEpTagOptions();
+          s.focus();
+        }
+      });
+      document.getElementById('epMsPanel').addEventListener('click', function(e) { e.stopPropagation(); });
+      document.getElementById('epMsSearch').addEventListener('input', function() { renderEpTagOptions(); });
+      document.getElementById('epMsClear').addEventListener('click', function() {
+        epSelectedTags = [];
+        updateEpTagSummary();
+        renderEpTagOptions();
+        updatePlayer();
+      });
+
+      updateEpTagSummary();
+      renderEpTagOptions();
+    }
+
+    function updateEpTagSummary() {
+      var v = document.getElementById('epMsVal');
+      if (!v) return;
+      if (!epSelectedTags.length) {
+        v.textContent = 'Select tags';
+        v.classList.add('placeholder');
+      } else {
+        v.textContent = epSelectedTags.join(', ');
+        v.classList.remove('placeholder');
+      }
+      var cnt = document.getElementById('epMsCount');
+      if (cnt) cnt.textContent = epSelectedTags.length ? (epSelectedTags.length + ' selected') : '';
+    }
+
+    function renderEpTagOptions() {
+      var list = document.getElementById('epMsList');
+      if (!list) return;
+      var searchEl = document.getElementById('epMsSearch');
+      var q = (searchEl && searchEl.value ? searchEl.value : '').toLowerCase();
+      list.innerHTML = '';
+      var shown = 0;
+      EP_TAGS.forEach(function(t) {
+        if (q && t.toLowerCase().indexOf(q) < 0) return;
+        shown++;
+        var l = document.createElement('label');
+        l.className = 'ep-ms-opt';
+        var cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.checked = epSelectedTags.indexOf(t) >= 0;
+        cb.addEventListener('change', function() {
+          var i = epSelectedTags.indexOf(t);
+          if (cb.checked && i < 0) epSelectedTags.push(t);
+          if (!cb.checked && i >= 0) epSelectedTags.splice(i, 1);
+          updateEpTagSummary();
+          updatePlayer();
+        });
+        l.appendChild(cb);
+        var nm = document.createElement('span');
+        nm.textContent = t;
+        l.appendChild(nm);
+        var c = document.createElement('span');
+        c.className = 'cnt';
+        c.textContent = epTagCount(t);
+        l.appendChild(c);
+        list.appendChild(l);
+      });
+      if (!shown) list.innerHTML = '<div class="ep-ms-empty">No matching tags</div>';
     }
 
     function onHeightChange() {
@@ -8286,9 +8431,12 @@
       var download = document.getElementById('epDownload').value === 'Show';
       var rtl = document.getElementById('epRtl').value === 'Yes';
 
-      // Filter
+      // Filter + limit
       var filtered = epData.slice();
-      if (filter === 'publish_time') {
+      if (filter === 'latest' || filter === 'earliest') {
+        filtered.sort(function(a, b) { return filter === 'earliest' ? (a.num - b.num) : (b.num - a.num); });
+        filtered = filtered.slice(0, parseInt(limit, 10) || 1);
+      } else if (filter === 'publish_time') {
         var startDate = document.getElementById('epStartDate').value;
         var endDate = document.getElementById('epEndDate').value;
         if (startDate) filtered = filtered.filter(function(e) { return e.pubDate && e.pubDate >= startDate; });
@@ -8296,19 +8444,18 @@
       } else if (filter === 'season') {
         var season = document.getElementById('epSeason').value;
         if (season !== 'all') filtered = filtered.filter(function(e) { return e.season === parseInt(season, 10); });
+      } else if (filter === 'tags') {
+        if (epSelectedTags.length) {
+          filtered = filtered.filter(function(e) { return e.tags && e.tags.some(function(t) { return epSelectedTags.indexOf(t) >= 0; }); });
+        }
       }
-      // 'all' and 'tags' show all episodes
 
-      // Sort
+      // Sort by Display Order
       if (order === 'Serial (From Old to New)') {
         filtered.sort(function(a, b) { return a.num - b.num; });
       } else {
         filtered.sort(function(a, b) { return b.num - a.num; });
       }
-
-      // Limit
-      var count = limit === 'All' ? filtered.length : parseInt(limit, 10);
-      filtered = filtered.slice(0, count);
 
       // Font color
       var textColor = '#1e293b';
@@ -8504,7 +8651,7 @@
       var filter = document.getElementById('epFilters').value;
 
       var orderMap = {'Episodic (From New to Old)':'episodic','Serial (From Old to New)':'old_to_new'};
-      var filterMap = {'all':'all','publish_time':'all','season':'all','tags':'all'};
+      var filterMap = {'latest':'all','earliest':'all','publish_time':'all','season':'all','tags':'all'};
       var logoMap = {'Episode page':'episode_page','Podcast page':'podcast_page','None':'none'};
 
       var params = [
@@ -8552,6 +8699,8 @@
 
     // ===== Init =====
     renderDistList();
+    buildEpTagPick();
+    document.addEventListener('click', closeEpTagPanel);
   </script>
 
   <!-- Page Order Modal -->
