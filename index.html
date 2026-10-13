@@ -2839,6 +2839,10 @@
       outline: none;
       min-height: 340px;
     }
+    .sp-editor-box:focus-within {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(26,154,108,.1);
+    }
 
     .page-create-actions {
       display: flex;
@@ -2901,29 +2905,32 @@
     .page-action-menu .page-act-icon { color: var(--text-secondary); flex-shrink: 0; display: inline-flex; }
 
     .sp-reset-btn {
-      padding: 10px 28px;
-      border-radius: 50px;
-      font-size: 16px;
-      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
       font-family: inherit;
-      background: transparent;
+      background: #fff;
       color: var(--text-secondary);
-      border: 1px solid transparent;
+      border: 1px solid var(--border);
       cursor: pointer;
       transition: background 0.15s, border-color 0.15s, color 0.15s;
     }
     .sp-reset-btn:hover {
-      background: #f1f5f9;
-      border-color: var(--border);
+      background: #f8fafc;
+      border-color: #cbd5e1;
       color: var(--text);
     }
     .sp-done-btn {
-      padding: 10px 28px;
+      padding: 9px 22px;
       border-radius: 50px;
-      font-size: 16px;
+      font-size: 14px;
       font-weight: 600;
       font-family: inherit;
-      background: var(--text);
+      background: #1e293b;
       color: #fff;
       border: none;
       cursor: pointer;
@@ -2940,7 +2947,7 @@
     .page-editor-overlay.show { display: flex; }
     .page-editor-header {
       display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
-      padding: 20px 40px; border-bottom: 1px solid var(--border);
+      padding: 14px 24px; border-bottom: 1px solid var(--border);
       flex-shrink: 0;
     }
     .page-editor-title { font-size: 22px; font-weight: 700; color: var(--text); text-align: center; }
@@ -2951,19 +2958,30 @@
       padding: 32px 40px;
     }
     .page-editor-form { max-width: 640px; margin: 0 auto; }
-    .page-editor-field { margin-bottom: 22px; }
+    .page-editor-field { margin-bottom: 24px; }
     .page-editor-label {
-      display: block; font-size: 13px; font-weight: 600; color: var(--text);
+      display: block; font-size: 16px; font-weight: 600; color: var(--text);
       margin-bottom: 6px;
     }
+    .page-editor-req { color: #dc2626; margin-left: 3px; font-weight: 600; }
     .page-editor-input {
-      width: 100%; padding: 10px 12px; border: 1px solid var(--border);
-      border-radius: 8px; font-size: 15px; font-family: inherit; color: var(--text);
-      background: #fff; outline: none; box-sizing: border-box;
-      transition: border-color .15s;
+      width: 100%; padding: 10px 14px; border: 1px solid transparent;
+      border-radius: 8px; font-size: 14px; font-family: inherit; color: var(--text);
+      background-color: #f8fafc; outline: none; box-sizing: border-box;
+      transition: border-color .15s, box-shadow .15s, background-color .15s;
     }
-    .page-editor-input:focus { border-color: var(--text); }
+    .page-editor-input:hover { border-color: #e2e8f0; }
+    .page-editor-input:focus { border-color: var(--primary); background-color: #fff; box-shadow: 0 0 0 3px rgba(26,154,108,.1); }
     .page-editor-input::placeholder { color: var(--text-tertiary); }
+    .page-editor-input.is-error { border-color: #dc2626; background-color: #fff; }
+    .page-editor-input.is-error:focus { border-color: #dc2626; background-color: #fff; box-shadow: 0 0 0 3px rgba(220,38,38,.1); }
+    .page-field-error {
+      display: none;
+      margin-top: 6px;
+      font-size: 13px;
+      color: #dc2626;
+    }
+    .page-field-error.show { display: block; }
 
     /* Create/Edit Page editor */
     .page-editor-back {
@@ -3283,6 +3301,31 @@
     }
     .ep-row-control select:focus {
       border-color: var(--text);
+    }
+    .ep-css-textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 13px;
+      font-family: monospace;
+      color: var(--text);
+      background: #fff;
+      outline: none;
+      box-sizing: border-box;
+      resize: vertical;
+      line-height: 1.5;
+    }
+    .ep-css-textarea:focus {
+      border-color: var(--text);
+    }
+    .ep-css-caret {
+      color: var(--text-tertiary);
+      flex-shrink: 0;
+      transition: transform 0.15s;
+    }
+    .ep-css-caret.open {
+      transform: rotate(180deg);
     }
 
     /* ── Embed Player: Color Swatch Wrapper ──── */
@@ -5120,7 +5163,7 @@
       <!-- Page Editor Container (shown when creating/editing a page) -->
       <div class="page-editor-overlay" id="pageEditorContainer">
         <div class="page-editor-header">
-          <button type="button" class="sp-reset-btn" onclick="hidePageEditor()">Cancel</button>
+          <button type="button" class="sp-reset-btn" onclick="requestClosePageEditor()">Cancel</button>
           <div class="page-editor-title" id="pageEditorTitle">Publish Page</div>
           <button type="button" class="sp-done-btn" onclick="savePage()">Publish</button>
         </div>
@@ -5128,30 +5171,31 @@
         <div class="page-editor-body">
           <div class="page-editor-form">
             <div class="page-editor-field">
-              <label class="page-editor-label" for="pageNameInput">Title</label>
-              <input type="text" id="pageNameInput" class="page-editor-input" placeholder="Enter page title">
+              <label class="page-editor-label" for="pageNameInput">Title <span class="page-editor-req">*</span></label>
+              <input type="text" id="pageNameInput" class="page-editor-input" placeholder="Enter page title" oninput="markPageDirty();clearPageNameError()">
+              <div class="page-field-error" id="pageNameError">Please enter a page title.</div>
             </div>
 
             <div class="page-editor-field">
               <label class="page-editor-label">Description <span class="info-icon" tabindex="0"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg><span class="info-tooltip">You may create pages for Introduction, Biography, Contact info, or any other supplement information for your podcast.</span></span></label>
               <div class="sp-editor-box">
                 <div class="sp-editor-header">
-                  <select><option>Paragraph</option><option>Heading 1</option><option>Heading 2</option></select>
+                  <select onchange="execPageCmd('formatBlock', this.value)"><option value="p">Paragraph</option><option value="h1">Heading 1</option><option value="h2">Heading 2</option></select>
                   <select><option>System Font</option><option>Inter</option><option>Roboto</option><option>Georgia</option></select>
                   <select><option>14pt</option><option>12pt</option><option>18pt</option><option>24pt</option></select>
                 </div>
                 <div class="sp-editor-format">
-                  <span class="sp-fmt-btn" title="Bold"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4h8a4 4 0 0 1 0 8H6z"></path><path d="M6 12h9a4 4 0 0 1 0 8H6z"></path></svg></span>
-                  <span class="sp-fmt-btn" title="Italic"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="4" x2="10" y2="4"></line><line x1="14" y1="20" x2="5" y2="20"></line><line x1="15" y1="4" x2="9" y2="20"></line></svg></span>
-                  <span class="sp-fmt-btn" title="Underline"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4v6a6 6 0 0 0 12 0V4"></path><line x1="4" y1="20" x2="20" y2="20"></line></svg></span>
+                  <span class="sp-fmt-btn" title="Bold" onclick="execPageCmd('bold')"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4h8a4 4 0 0 1 0 8H6z"></path><path d="M6 12h9a4 4 0 0 1 0 8H6z"></path></svg></span>
+                  <span class="sp-fmt-btn" title="Italic" onclick="execPageCmd('italic')"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="4" x2="10" y2="4"></line><line x1="14" y1="20" x2="5" y2="20"></line><line x1="15" y1="4" x2="9" y2="20"></line></svg></span>
+                  <span class="sp-fmt-btn" title="Underline" onclick="execPageCmd('underline')"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4v6a6 6 0 0 0 12 0V4"></path><line x1="4" y1="20" x2="20" y2="20"></line></svg></span>
                   <span class="sp-fmt-divider"></span>
-                  <span class="sp-fmt-btn" title="Bulleted list"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg></span>
-                  <span class="sp-fmt-btn" title="Numbered list"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="10" y1="6" x2="21" y2="6"></line><line x1="10" y1="12" x2="21" y2="12"></line><line x1="10" y1="18" x2="21" y2="18"></line><path d="M4 6h1v4"></path><path d="M4 10h2"></path><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"></path></svg></span>
+                  <span class="sp-fmt-btn" title="Bulleted list" onclick="execPageCmd('insertUnorderedList')"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg></span>
+                  <span class="sp-fmt-btn" title="Numbered list" onclick="execPageCmd('insertOrderedList')"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="10" y1="6" x2="21" y2="6"></line><line x1="10" y1="12" x2="21" y2="12"></line><line x1="10" y1="18" x2="21" y2="18"></line><path d="M4 6h1v4"></path><path d="M4 10h2"></path><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"></path></svg></span>
                   <span class="sp-fmt-divider"></span>
-                  <span class="sp-fmt-btn" title="Insert link"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></span>
-                  <span class="sp-fmt-btn" title="Code"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg></span>
+                  <span class="sp-fmt-btn" title="Insert link" onclick="insertPageLink()"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></span>
+                  <span class="sp-fmt-btn" title="Code" onclick="execPageCmd('formatBlock', 'pre')"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg></span>
                 </div>
-                <div class="sp-editor-preview" contenteditable="true" data-placeholder="You may create pages for Introduction, Biography, contact info, or any other supplement information for your podcast"></div>
+                <div class="sp-editor-preview" contenteditable="true" data-placeholder="You may create pages for Introduction, Biography, contact info, or any other supplement information for your podcast" oninput="markPageDirty()"></div>
               </div>
             </div>
             </div>
@@ -5413,6 +5457,17 @@
               <div class="ep-row-control select-wrap">
                 <select id="epRtl" onchange="updatePlayer()"><option>No</option><option>Yes</option></select>
               </div>
+            </div>
+
+            <div class="ep-row-item" style="cursor:pointer;align-items:center;" onclick="toggleCustomCss()">
+              <div class="ep-row-label">Customize CSS</div>
+              <div class="ep-row-control" style="display:flex;justify-content:flex-end;">
+                <svg class="ep-css-caret" id="epCssCaret" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </div>
+            </div>
+            <div id="epCustomCssBody" style="display:none;padding-bottom:12px;">
+              <textarea id="epCustomCssTextarea" class="ep-css-textarea" rows="6" placeholder="Add custom CSS here..." oninput="markEpDirty()"></textarea>
+              <div style="font-size:13px;color:var(--text-secondary);line-height:1.5;margin-top:6px;">Enter custom CSS to further customize your embed player.</div>
             </div>
 
             <div style="border-top:1px solid var(--border);margin-top:16px;padding-top:16px;">
@@ -8110,14 +8165,17 @@
 
     // ===== Page Editor (Create / Edit page) =====
     var pageEditorEditingRow = null;
+    var pageEditorDirty = false;
 
     function openPageEditor(heading, title) {
       document.getElementById('pageEditorTitle').textContent = heading === 'Create a Page' ? 'Publish Page' : heading;
       document.getElementById('pageNameInput').value = title || '';
       var desc = document.querySelector('#pageEditorContainer .sp-editor-preview');
       if (desc) desc.textContent = '';
+      clearPageNameError();
       document.getElementById('page-podcast-website').style.display = 'none';
       document.getElementById('pageEditorContainer').classList.add('show');
+      pageEditorDirty = false;
     }
     function showPageEditor(isNew) {
       pageEditorEditingRow = null;
@@ -8125,6 +8183,7 @@
     }
     function hidePageEditor() {
       pageEditorEditingRow = null;
+      pageEditorDirty = false;
       document.getElementById('page-podcast-website').style.display = '';
       document.getElementById('pageEditorContainer').classList.remove('show');
     }
@@ -8225,8 +8284,12 @@
       var nameInput = document.getElementById('pageNameInput');
       var name = nameInput ? nameInput.value.trim() : '';
       if (!name) {
-        showToast('Please enter a page name');
-        if (nameInput) nameInput.focus();
+        if (nameInput) {
+          nameInput.classList.add('is-error');
+          nameInput.focus();
+        }
+        var err = document.getElementById('pageNameError');
+        if (err) err.classList.add('show');
         return;
       }
       if (pageEditorEditingRow) {
@@ -8237,7 +8300,47 @@
         showPagesListView();
       }
       showToast('Page published');
+      pageEditorDirty = false;
       hidePageEditor();
+    }
+
+    function markPageDirty() {
+      pageEditorDirty = true;
+    }
+    function clearPageNameError() {
+      var input = document.getElementById('pageNameInput');
+      var err = document.getElementById('pageNameError');
+      if (input) input.classList.remove('is-error');
+      if (err) err.classList.remove('show');
+    }
+    function requestClosePageEditor() {
+      if (pageEditorDirty) {
+        document.getElementById('pageSaveConfirmModal').classList.add('show');
+      } else {
+        hidePageEditor();
+      }
+    }
+    function closePageSaveConfirm() {
+      document.getElementById('pageSaveConfirmModal').classList.remove('show');
+    }
+    function discardPageChanges() {
+      closePageSaveConfirm();
+      hidePageEditor();
+    }
+    function execPageCmd(cmd, val) {
+      var ed = document.querySelector('#pageEditorContainer .sp-editor-preview');
+      if (ed) ed.focus();
+      document.execCommand(cmd, false, val || null);
+      markPageDirty();
+    }
+    function insertPageLink() {
+      var ed = document.querySelector('#pageEditorContainer .sp-editor-preview');
+      if (!ed) return;
+      ed.focus();
+      var url = prompt('Enter link URL', 'https://');
+      if (!url) return;
+      document.execCommand('createLink', false, url);
+      markPageDirty();
     }
 
     // ===== Edit Page =====
@@ -8379,6 +8482,15 @@
       }
     }
 
+    function toggleCustomCss() {
+      var body = document.getElementById('epCustomCssBody');
+      var caret = document.getElementById('epCssCaret');
+      if (!body) return;
+      var isOpen = body.style.display !== 'none';
+      body.style.display = isOpen ? 'none' : 'block';
+      if (caret) caret.classList.toggle('open', !isOpen);
+    }
+
     function resetEpDefaults() {
       // Player color
       document.getElementById('epPlayerColor').querySelectorAll('.ep-swatch-wrap').forEach(function(w) { w.classList.remove('active'); w.querySelector('.ep-swatch').classList.remove('active'); });
@@ -8399,6 +8511,7 @@
       document.getElementById('epShare').value = 'Show';
       document.getElementById('epDownload').value = 'Show';
       document.getElementById('epLogoLink').value = 'Episode page';
+      document.getElementById('epCustomCssTextarea').value = '';
       document.getElementById('epFilters').value = 'latest';
       document.getElementById('epFilterNumEpisodes').style.display = 'block';
       document.getElementById('epFilterPublishTime').style.display = 'none';
@@ -8881,6 +8994,18 @@
     document.addEventListener('click', closeEpTagPanel);
     document.addEventListener('click', closeAllPageMenus);
   </script>
+
+  <!-- Save Changes Confirm Modal (page editor) -->
+  <div class="confirm-overlay" id="pageSaveConfirmModal" onclick="if(event.target===this)closePageSaveConfirm()">
+    <div class="confirm-dialog">
+      <div class="confirm-title">Unsaved Changes</div>
+      <div class="confirm-desc">You have unsaved changes. Are you sure you want to leave?</div>
+      <div class="confirm-actions">
+        <button class="confirm-btn confirm-btn-primary" onclick="discardPageChanges()">Leave</button>
+        <button class="confirm-btn confirm-btn-secondary" onclick="closePageSaveConfirm()">Stay</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Delete Pages Confirm Modal -->
   <div class="confirm-overlay" id="deletePagesConfirmModal">
