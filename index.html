@@ -2482,6 +2482,12 @@
       background: #dc2626; color: #fff;
     }
     .confirm-dialog .confirm-btn-danger:hover { background: #b91c1c; }
+    #deletePagesConfirmModal .confirm-btn-danger {
+      background: rgba(220, 38, 38, 0.55);
+    }
+    #deletePagesConfirmModal .confirm-btn-danger:hover {
+      background: rgba(220, 38, 38, 0.72);
+    }
     .confirm-dialog .confirm-btn-primary:disabled {
       background: #cbd5e1;
       color: #fff;
@@ -2603,6 +2609,46 @@
       transition: background 0.15s;
     }
     .pages-new-btn:hover { background: #334155; }
+
+    .pages-bulk-bar {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+    .pages-bulk-selectall {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--text);
+      cursor: pointer;
+      margin: 0;
+    }
+    .pages-bulk-count {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .pages-bulk-delete {
+      display: inline-flex;
+      align-items: center;
+      background: none;
+      border: none;
+      padding: 0;
+      margin-left: 6px;
+      color: #dc2626;
+      font-size: 14px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: color 0.15s;
+    }
+    .pages-bulk-delete:hover {
+      color: #b91c1c;
+    }
 
     .pages-table {
       width: 100%;
@@ -5009,11 +5055,16 @@
           </div>
           <!-- Page List View -->
           <div id="pagesListView" style="display:none;">
+            <div class="pages-bulk-bar" id="pagesBulkBar" style="display:none;">
+              <input type="checkbox" class="pages-bulk-selectall" id="pagesBulkSelectAll" onclick="togglePageSelectAll(this)">
+              <span class="pages-bulk-count" id="pagesBulkCount">0 selected</span>
+              <button class="pages-bulk-delete" onclick="openDeletePagesConfirm()">Delete</button>
+            </div>
             <div class="tab-panel active" id="panel-pages">
               <table class="pages-table">
                 <thead>
                   <tr>
-                    <th style="width:44px;"><input type="checkbox" onclick="document.querySelectorAll('.page-row-check').forEach(c=>c.checked=this.checked)"></th>
+                    <th style="width:44px;"><input type="checkbox" onclick="document.querySelectorAll('.page-row-check').forEach(c=>c.checked=this.checked);updatePageSelection()"></th>
                     <th>Title</th>
                     <th>Author</th>
                     <th>When</th>
@@ -5022,7 +5073,7 @@
                 </thead>
                 <tbody>
                   <tr onclick="editPage(this)">
-                    <td><input type="checkbox" class="page-row-check" onclick="event.stopPropagation()"></td>
+                    <td><input type="checkbox" class="page-row-check" onclick="event.stopPropagation();updatePageSelection()"></td>
                     <td><span class="page-title">Untitled Page - 2026-05-29 02:50:25</span></td>
                     <td>MyAuthor</td>
                     <td>May 29, 2026</td>
@@ -5037,7 +5088,7 @@
                     </td>
                   </tr>
                   <tr onclick="editPage(this)">
-                    <td><input type="checkbox" class="page-row-check" onclick="event.stopPropagation()"></td>
+                    <td><input type="checkbox" class="page-row-check" onclick="event.stopPropagation();updatePageSelection()"></td>
                     <td><span class="page-title">Untitled Page - 2026-05-29 02:49:42</span></td>
                     <td>MyAuthor</td>
                     <td>May 29, 2026</td>
@@ -5054,7 +5105,7 @@
                 </tbody>
               </table>
               <div class="pages-footer">
-                <span>Showing 1 to 2 of 2 entries</span>
+                <span id="pagesFooterInfo">Showing 1 to 2 of 2 entries</span>
                 <div class="pages-pagination">
                   <span class="disabled">«</span>
                   <span class="active">1</span>
@@ -8085,6 +8136,76 @@
       var listBtn = document.querySelector('#pagesHeaderBar .pages-sub-tab:nth-child(2)');
       if (listBtn) listBtn.classList.add('active');
     }
+    function showPagesEmptyView() {
+      document.getElementById('pagesEmptyView').style.display = '';
+      document.getElementById('pagesListView').style.display = 'none';
+      var tabs = document.querySelectorAll('#pagesHeaderBar .pages-sub-tab');
+      tabs.forEach(function(b) { b.classList.remove('active'); });
+      var emptyBtn = document.querySelector('#pagesHeaderBar .pages-sub-tab:nth-child(1)');
+      if (emptyBtn) emptyBtn.classList.add('active');
+    }
+    function updatePageFooter() {
+      var tbody = document.querySelector('#pagesListView .pages-table tbody');
+      var total = tbody ? tbody.querySelectorAll('tr').length : 0;
+      var info = document.getElementById('pagesFooterInfo');
+      if (info) {
+        info.textContent = total === 0 ? 'Showing 0 entries' : 'Showing 1 to ' + total + ' of ' + total + ' entries';
+      }
+    }
+    function updatePageSelection() {
+      var checks = document.querySelectorAll('#pagesListView .page-row-check');
+      var selected = 0;
+      checks.forEach(function(c) { if (c.checked) selected++; });
+      var bulkBar = document.getElementById('pagesBulkBar');
+      if (bulkBar) bulkBar.style.display = selected > 0 ? 'flex' : 'none';
+      var countEl = document.getElementById('pagesBulkCount');
+      if (countEl) countEl.textContent = selected + ' selected';
+      var selectAll = document.querySelector('#pagesListView thead input[type="checkbox"]');
+      if (selectAll) {
+        selectAll.checked = selected > 0 && selected === checks.length;
+        selectAll.indeterminate = selected > 0 && selected < checks.length;
+      }
+      var bulkSelectAll = document.getElementById('pagesBulkSelectAll');
+      if (bulkSelectAll) {
+        bulkSelectAll.checked = selected > 0 && selected === checks.length;
+        bulkSelectAll.indeterminate = selected > 0 && selected < checks.length;
+      }
+    }
+    function togglePageSelectAll(cb) {
+      document.querySelectorAll('#pagesListView .page-row-check').forEach(function(c) { c.checked = cb.checked; });
+      updatePageSelection();
+    }
+    function deleteSelectedPages() {
+      var checks = document.querySelectorAll('#pagesListView .page-row-check');
+      checks.forEach(function(c) {
+        if (c.checked) {
+          var tr = c.closest('tr');
+          if (tr && tr.parentNode) tr.parentNode.removeChild(tr);
+        }
+      });
+      updatePageFooter();
+      var remaining = document.querySelectorAll('#pagesListView .pages-table tbody tr').length;
+      if (remaining === 0) {
+        showPagesEmptyView();
+      } else {
+        updatePageSelection();
+      }
+      showToast('Selected pages deleted');
+    }
+    function openDeletePagesConfirm() {
+      var checks = document.querySelectorAll('#pagesListView .page-row-check');
+      var selected = 0;
+      checks.forEach(function(c) { if (c.checked) selected++; });
+      if (selected === 0) return;
+      document.getElementById('deletePagesConfirmModal').classList.add('show');
+    }
+    function closeDeletePagesConfirm() {
+      document.getElementById('deletePagesConfirmModal').classList.remove('show');
+    }
+    function confirmDeletePages() {
+      closeDeletePagesConfirm();
+      deleteSelectedPages();
+    }
     function addPageToList(title) {
       var tbody = document.querySelector('#pagesListView .pages-table tbody');
       if (!tbody) return;
@@ -8098,6 +8219,7 @@
       var cells = tr.querySelectorAll('td');
       if (cells.length >= 4) cells[3].textContent = months[now.getMonth()] + ' ' + now.getDate() + ', ' + now.getFullYear();
       tbody.insertBefore(tr, tbody.firstChild);
+      updatePageFooter();
     }
     function savePage() {
       var nameInput = document.getElementById('pageNameInput');
@@ -8759,6 +8881,18 @@
     document.addEventListener('click', closeEpTagPanel);
     document.addEventListener('click', closeAllPageMenus);
   </script>
+
+  <!-- Delete Pages Confirm Modal -->
+  <div class="confirm-overlay" id="deletePagesConfirmModal">
+    <div class="confirm-dialog">
+      <div class="confirm-title">Delete Pages</div>
+      <div class="confirm-desc" id="deletePagesConfirmDesc">Are you sure you want to delete the selected page(s)? This action cannot be undone.</div>
+      <div class="confirm-actions">
+        <button class="confirm-btn confirm-btn-secondary" onclick="closeDeletePagesConfirm()">Cancel</button>
+        <button class="confirm-btn confirm-btn-danger" onclick="confirmDeletePages()">Delete</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Confirm Disconnect Modal -->
   <div class="confirm-overlay" id="confirmDisconnectModal">
