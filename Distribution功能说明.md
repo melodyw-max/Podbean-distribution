@@ -1,3 +1,10 @@
+
+---
+title: Distribution 功能说明
+permalink: /Distribution/distribution-spec
+---
+
+
 # Distribution 模块功能说明
 
 > 本文档说明 Podbean 后台 **Distribution（分发）** 菜单及其下属子菜单页面的功能。
