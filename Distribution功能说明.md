@@ -1,9 +1,4 @@
 
----
-title: Distribution 功能说明
-permalink: /Distribution/distribution-spec
----
-
 
 # Distribution 模块功能说明
 
