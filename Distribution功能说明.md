@@ -1,3 +1,6 @@
+---
+title: Distribution 功能说明
+---
 
 
 # Distribution 模块功能说明
