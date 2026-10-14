@@ -3396,7 +3396,7 @@
     }
 
     /* Embed Player: tags multi-select dropdown */
-    .ep-ms { position: relative; padding: 6px 0 2px; }
+    .ep-ms { position: relative; }
     .ep-ms-btn { width:100%; display:flex; align-items:center; justify-content:space-between; gap:8px; padding:8px 12px; border:1px solid var(--border); border-radius:8px; background:#fff; font-size:14px; font-family:inherit; color:var(--text); cursor:pointer; text-align:left; box-sizing:border-box; }
     .ep-ms-btn:hover { border-color:#cbd5e1; }
     .ep-ms-btn.open { border-color: var(--text); }
@@ -5343,7 +5343,12 @@
               </div>
             </div>
             <div id="epFilterTags" style="display:none;" class="ep-filter-option">
-              <div id="epTagPick"></div>
+              <div class="ep-row-item">
+                <div class="ep-row-label">Tags</div>
+                <div class="ep-row-control select-wrap">
+                  <div id="epTagPick"></div>
+                </div>
+              </div>
             </div>
 
             <div class="ep-row-item">
