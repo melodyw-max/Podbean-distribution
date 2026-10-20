@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Distribution Feature Doc</title>
+<style>
+:root{--primary:#1a9a6c;--text:#1e293b;--text-secondary:#64748b;--text-tertiary:#94a3b8;--border:#e2e8f0;--bg:#f8fafc;--sidebar-w:300px;}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;color:var(--text);background:#fff;-webkit-font-smoothing:antialiased;}
+.layout{display:flex;min-height:100vh;}
+.sidebar{position:fixed;top:0;left:0;bottom:0;width:var(--sidebar-w);background:var(--bg);border-right:1px solid var(--border);overflow-y:auto;padding:20px 14px 40px;}
+.sidebar-head{font-size:13px;font-weight:700;letter-spacing:.02em;color:var(--text-tertiary);text-transform:uppercase;padding:6px 10px 12px;border-bottom:1px solid var(--border);margin-bottom:10px;}
+.toc ul{list-style:none;margin:0;padding:0;}
+.toc li{margin:0;}
+.toc a{display:block;padding:5px 10px;border-radius:6px;color:var(--text-secondary);text-decoration:none;font-size:13px;line-height:1.5;border-left:2px solid transparent;}
+.toc a:hover{background:#eef2f7;color:var(--text);}
+.toc a.active{background:#e6f4ee;color:var(--primary);font-weight:600;border-left-color:var(--primary);}
+.toc ul ul{padding-left:14px;}
+.toc ul ul ul{padding-left:10px;}
+.toc ul ul ul ul{padding-left:10px;}
+.content{flex:1;margin-left:var(--sidebar-w);max-width:980px;padding:40px 56px 96px;}
+.content h1{font-size:27px;line-height:1.35;margin:0 0 22px;padding-bottom:14px;border-bottom:1px solid var(--border);scroll-margin-top:16px;}
+.content h2{font-size:21px;margin:42px 0 14px;padding-bottom:10px;border-bottom:1px solid var(--border);scroll-margin-top:16px;}
+.content h3{font-size:17px;margin:30px 0 12px;scroll-margin-top:16px;}
+.content h4{font-size:15px;margin:24px 0 10px;scroll-margin-top:16px;}
+.content p{font-size:15px;line-height:1.8;margin:12px 0;}
+.content blockquote{margin:16px 0;padding:12px 16px;border-left:3px solid var(--primary);background:#f0faf5;border-radius:0 8px 8px 0;color:var(--text-secondary);}
+.content blockquote p{margin:4px 0;}
+.content hr{border:none;border-top:1px solid var(--border);margin:32px 0;}
+.content code{background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:13px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;color:#0f766e;}
+.content pre{background:#0f172a;color:#e2e8f0;padding:14px 16px;border-radius:10px;overflow-x:auto;font-size:13px;line-height:1.6;}
+.content pre code{background:none;color:inherit;padding:0;}
+.content table{border-collapse:collapse;width:100%;margin:16px 0;font-size:14px;}
+.content th,.content td{border:1px solid var(--border);padding:9px 12px;text-align:left;vertical-align:top;}
+.content th{background:var(--bg);font-weight:600;}
+.content tbody tr:nth-child(even){background:#fafbfc;}
+.content a{color:var(--primary);text-decoration:none;}
+.content a:hover{text-decoration:underline;}
+.content ul,.content ol{font-size:15px;line-height:1.8;padding-left:26px;margin:10px 0;}
+.content li{margin:5px 0;}
+.content li>ul,.content li>ol{margin:4px 0;}
+@media (max-width:860px){
+  .sidebar{position:static;width:auto;max-height:42vh;border-right:none;border-bottom:1px solid var(--border);}
+  .content{margin-left:0;padding:24px 20px 64px;}
+}</style>
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+  <div class="sidebar-head">Contents</div>
+  <nav class="toc"><ul>
+<li><a href="#distribution-模块功能说明">Distribution 模块功能说明</a>
+<ul>
+<li><a href="#一模块概述">一、模块概述</a></li>
+<li><a href="#二子菜单页面功能说明">二、子菜单页面功能说明</a>
+<ul>
+<li><a href="#podcast-apps分发平台总览">1. Podcast Apps（分发平台总览）</a></li>
+<li><a href="#podcast-apps-2全平台已提交视角">2. Podcast Apps 2（全平台已提交视角）</a></li>
+<li><a href="#podcast-apps-upgrade分发升级推广页">3. Podcast apps-upgrade（分发升级推广页）</a></li>
+<li><a href="#podcast-apps-preaction分发前准备清单">4. Podcast apps-preaction（分发前准备清单）</a></li>
+<li><a href="#social-share社交分享">5. Social Share（社交分享）</a></li>
+<li><a href="#podcast-website播客网站管理">6. Podcast Website（播客网站管理）</a>
+<ul>
+<li><a href="#三个-tab">6.1 三个 Tab</a></li>
+<li><a href="#theme-templates">6.2 Theme Templates</a></li>
+<li><a href="#website-url">6.3 Website URL</a></li>
+<li><a href="#pages">6.4 Pages</a></li>
+</ul></li>
+<li><a href="#embed-player嵌入播放器">7. Embed Player（嵌入播放器）</a></li>
+</ul></li>
+<li><a href="#三分发提交子页面">三、分发提交子页面</a>
+<ul>
+<li><a href="#apple-podcasts-提交页">4.1 Apple Podcasts 提交页</a>
+<ul>
+<li><a href="#tab-1-submit">Tab 1 — Submit</a></li>
+<li><a href="#tab-2-enable-hls-video">Tab 2 — Enable HLS Video</a></li>
+<li><a href="#tab-3-apple-podcast-subscription">Tab 3 — Apple Podcast Subscription</a></li>
+<li><a href="#底部栏apple">底部栏（Apple）</a></li>
+</ul></li>
+<li><a href="#spotify-提交页">4.2 Spotify 提交页</a></li>
+<li><a href="#youtube-提交页">4.3 YouTube 提交页</a></li>
+<li><a href="#amazon-music-audible-提交页">4.4 Amazon Music / Audible 提交页</a></li>
+<li><a href="#iheartradio-提交页">4.5 iHeartRadio 提交页</a></li>
+<li><a href="#player-fm-提交页">4.6 Player FM 提交页</a></li>
+<li><a href="#listen-notes-提交页">4.7 Listen Notes 提交页</a></li>
+<li><a href="#podchaser-提交页">4.8 Podchaser 提交页</a></li>
+<li><a href="#boomplay-提交页">4.9 Boomplay 提交页</a></li>
+<li><a href="#podbean-app-信息页">4.10 Podbean App 信息页</a></li>
+</ul></li>
+<li><a href="#四状态与数据要点">四、状态与数据要点</a></li>
+<li><a href="#五交互与边界情况">五、交互与边界情况</a></li>
+</ul></li>
+</ul></nav>
+</aside>
+<main class="content"><h1 id="distribution-模块功能说明">Distribution 模块功能说明</h1>
+<blockquote>
+<p>本文档说明 Podbean 后台 <strong>Distribution（分发）</strong> 菜单及其下属子菜单页面的功能。 适用范围：功能验收、使用说明、回归测试参考。</p>
+</blockquote>
+<hr />
+<h2 id="一模块概述">一、模块概述</h2>
+<p><strong>Distribution</strong> 是侧边栏主菜单项，点击后展开其子菜单（sub-menu）。该模块的核心目标是：<strong>帮助用户把播客分发到各大平台、做好分发前准备、并在分发后管理网站与社交渠道</strong>。</p>
+<p>子菜单共 7 项（从上到下）：</p>
+<table>
+<thead>
+<tr class="header">
+<th>#</th>
+<th>子菜单</th>
+<th>页面 ID</th>
+<th>功能定位</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>Podcast Apps</td>
+<td><code>page-podcast-apps</code></td>
+<td>分发平台总览列表</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>Podcast Apps 2</td>
+<td><code>page-podcast-apps-2</code></td>
+<td>分发平台列表（Apple 已批准视角）</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>Podcast apps-upgrade</td>
+<td><code>page-podcast-apps-upgrade</code></td>
+<td>分发功能升级推广页</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>Podcast apps-preaction</td>
+<td><code>page-podcast-apps-preaction</code></td>
+<td>分发前准备清单</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>Social Share</td>
+<td><code>page-social-share</code></td>
+<td>社交平台自动分享</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>Podcast Website</td>
+<td><code>page-podcast-website</code></td>
+<td>播客网站管理</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td>Embed Player</td>
+<td><code>page-embeddable-player</code></td>
+<td>多集嵌入播放器</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>说明：从 <strong>Podcast Apps</strong> 平台列表点击部分平台卡片，会进入独立的提交子页面： <strong>Apple Podcasts 提交页</strong>、<strong>Spotify 提交页</strong>、<strong>YouTube 提交页</strong>、<strong>Amazon Music/Audible 提交页</strong>、<strong>iHeartRadio 提交页</strong>、<strong>Player FM 提交页</strong>、<strong>Listen Notes 提交页</strong>、<strong>Podchaser 提交页</strong>、<strong>Boomplay 提交页</strong>（见下文）。<strong>Podbean App</strong> 为宿主平台，卡片常驻显示“已上线”，点击进入 <strong>Podbean App 信息页</strong>（下载推荐 + Badge 推广代码生成器）。</p>
+</blockquote>
+<hr />
+<h2 id="二子菜单页面功能说明">二、子菜单页面功能说明</h2>
+<h3 id="podcast-apps分发平台总览">1. Podcast Apps（分发平台总览）</h3>
+<p><strong>定位</strong>：分发到各大平台的入口列表。</p>
+<ul>
+<li>页面标题下方有一句引导文案：“Distribute your podcast to every major platform and reach millions of listeners worldwide.”</li>
+<li><strong>One-click submit（一键提交）Hero 卡</strong>（<code>paHeroCard</code>，位于平台列表上方）：
+<ul>
+<li>标题 “Submit your podcast to major platforms with one click.” + <strong>One-click submit</strong> 按钮 + 6 个平台 logo（Spotify、Amazon Music、iHeartRadio、Player FM、Podchaser、Boomplay）。</li>
+<li>点击按钮打开 <strong>One-click submit 模态框</strong>（<code>bulkSubmitModal</code>），一次性提交所有「Podbean 可代为提交」的平台（<code>bulkSubmitKeys</code>，共 6 个：Spotify、Amazon Music/Audible、iHeartRadio、Player FM、Podchaser、Boomplay；不含宿主 Podbean App，也不含自助提交的 YouTube / Listen Notes）。</li>
+<li>门槛：feed 含视频单集且 MP3-for-video 关闭时，先经 <code>mp3GateModal</code> 拦截（Enable 开启后继续进入一键提交流程）。</li>
+<li>模态框内逐平台展示（每个平台带对勾 + 名称 + <strong>View terms</strong> 展开条款；Amazon 内联滚动展示 Content License Agreement）；底部 <strong>Confirm Submit</strong>（主按钮）+ <strong>Cancel</strong>。</li>
+<li>提交后：所有未提交平台置为 submitted + pending（卡片显示琥珀色 Pending），关闭弹窗，显示绿色内联成功横幅（“Submitted to N platforms / We’ve submitted your podcast for you…”）+ toast。</li>
+<li>6 个平台全部提交后 Hero 卡自动隐藏（<code>refreshHeroState</code>），各平台状态由下方列表承接展示。</li>
+</ul></li>
+<li>平台列表（<code>distPlatformData</code>，共 10 个平台卡片）：
+<ol type="1">
+<li><strong>Apple Podcasts</strong></li>
+<li><strong>Spotify</strong></li>
+<li><strong>YouTube</strong></li>
+<li><strong>Podbean App</strong></li>
+<li><strong>Amazon Music / Audible</strong></li>
+<li><strong>iHeartRadio</strong></li>
+<li><strong>Player FM</strong></li>
+<li><strong>Podchaser</strong></li>
+<li><strong>Boomplay</strong></li>
+<li><strong>Listen Notes</strong></li>
+</ol></li>
+<li>每个卡片展示：平台图标 + 平台名 + 右侧操作区。</li>
+<li><strong>卡片外观</strong>：卡片之间无独立边框，用<strong>横向分割线</strong>分隔；鼠标悬停时卡片整行显示<strong>淡灰色底色</strong>。</li>
+<li><strong>卡片操作</strong>：
+<ul>
+<li><strong>未提交</strong>状态：右侧显示 <strong>Submit</strong> 按钮，代表待办操作。</li>
+<li><strong>Apple Podcasts / Spotify / YouTube / Amazon Music/Audible / iHeartRadio / Player FM / Listen Notes / Podchaser / Boomplay</strong>：点击卡片任意位置（包括 Submit 按钮）打开对应提交页：
+<ul>
+<li>Apple Podcasts → 打开 <strong>Apple 提交页</strong>（Submit tab）。</li>
+<li>Spotify → 打开 <strong>Spotify 提交页</strong>。</li>
+<li>YouTube → 打开 <strong>YouTube 提交页</strong>。</li>
+<li>Amazon Music/Audible → 打开 <strong>Amazon 提交页</strong>（阅读并接受 Content License Agreement 后提交）。</li>
+<li>iHeartRadio → 打开 <strong>iHeartRadio 提交页</strong>（勾选 6 项要求/条款后提交）。</li>
+<li>Player FM → 打开 <strong>Player FM 提交页</strong>（勾选 3 项要求/条款后提交）。</li>
+<li>Listen Notes → 打开 <strong>Listen Notes 提交页</strong>（两步流程：复制 RSS Feed，用户自行到 Listen Notes 网站提交；收到 URL 后粘贴保存）。</li>
+<li>Podchaser → 打开 <strong>Podchaser 提交页</strong>（勾选 3 项要求/条款后提交）。</li>
+<li>Boomplay → 打开 <strong>Boomplay 提交页</strong>（勾选 3 项要求/条款后提交）。</li>
+<li>Submit 按钮与整卡点击行为一致。</li>
+</ul></li>
+<li><strong>Podbean App</strong>：宿主平台，播客天然已在其 App 上线——卡片<strong>常驻显示“已提交”（绿色对勾）</strong>，无 Submit 按钮；但<strong>整卡可点击</strong>，进入 <strong>Podbean App 信息页</strong>（自动上线说明 + 下载推荐 + Badge 推广代码生成器），悬停显示 <strong>Manage</strong> 提示。</li>
+<li><strong>待审核（Pending）</strong>状态：通过提交页底部 <strong>Submit</strong> 提交后（Apple / Spotify / Amazon Music / iHeartRadio / Player FM / Podchaser / Boomplay），该平台进入“待平台审核”状态：
+<ul>
+<li><strong>点击 Submit 后停留在提交页</strong>，不自动跳回列表，让用户查看 pending 状态。</li>
+<li>提交页立即切换为琥珀色 <strong>“Submission Pending Approval”</strong> 横幅（与 Apple Podcasts 的 pending 状态一致），隐藏提交表单与 URL 区块、隐藏底部操作栏；通过面包屑返回 Podcast Apps。</li>
+<li>列表卡片右侧不再显示绿色对勾，改为<strong>琥珀色时钟图标 + Pending 文案</strong>（悬停仍显示 <strong>Manage</strong>，可重新进入提交页）。</li>
+<li><strong>不提供“Check Approval Status”演示按钮</strong>——审核通过后的 Live 状态已在 <strong>Podcast Apps 2</strong> 页面演示（见第 2 节），页面 1 的 Pending 即为终态。</li>
+</ul></li>
+<li><strong>已提交/已上线</strong>状态：右侧显示对勾（✓）。
+<ul>
+<li><strong>有提交页的平台</strong>（Apple / Spotify / YouTube / Amazon / iHeartRadio / Player FM / Listen Notes / Podchaser / Boomplay）：鼠标悬停卡片时显示 <strong>Manage</strong> 提示，表明卡片可点击重新打开提交页管理。</li>
+<li><strong>Podbean App</strong>：同样显示对勾 + <strong>Manage</strong> 提示（常驻），点击进入信息页。</li>
+</ul></li>
+<li>已提交的 <strong>Apple Podcasts</strong> 卡片整体可点击 → 重新打开 Apple 提交页（批准后进入 approved 视图）。</li>
+</ul></li>
+</ul>
+<p><strong>状态模型</strong>：<code>distSubmitted = { key: true/false }</code> 记录“已提交”，<code>distPending = { key: true/false }</code> 记录“待审核（已提交但未通过平台审核）”。提交页 Submit 后 → <code>submitted=true, pending=true</code>（卡片显示 Pending）；保存已有 URL 或模拟审核通过后 → <code>pending=false</code>（卡片显示绿色对勾 + Live 视图）。<strong>Podbean App 不依赖该状态</strong>，渲染时强制常驻显示“已提交”。</p>
+<hr />
+<h3 id="podcast-apps-2全平台已提交视角">2. Podcast Apps 2（全平台已提交视角）</h3>
+<p><strong>定位</strong>：与 Podcast Apps 相同的平台列表，但以“<strong>所有平台均已提交</strong>”为前提的视角。</p>
+<ul>
+<li>列表内容与 Podcast Apps 基本一致（同一 <code>renderDistList</code> 渲染，渲染到独立的 <code>paDistList2</code> 容器）。</li>
+<li><strong>差异点</strong>：
+<ul>
+<li><strong>所有平台在此页始终显示为“已提交”（绿色对勾）</strong>，不依赖实际 <code>distSubmitted</code> 状态（<code>isSubmitted2</code> 恒为 true）。</li>
+<li>无 Submit 按钮；有提交页的平台（含 Apple / Spotify / YouTube / Amazon / iHeartRadio / Player FM / Listen Notes / Podchaser / Boomplay）悬停显示 Manage 提示，可点击重新进入对应提交页管理。</li>
+<li><strong>Apple Podcasts</strong> 卡片点击 → 打开 Apple 提交页并进入 <strong>approved（已批准）视图</strong>（<code>openAppleApprovedView</code>）。</li>
+<li><strong>其他提交页平台从本页打开时，显示“已上线”状态详情</strong>（<code>applyDistView</code> / <code>openListenNotesModal</code> / <code>openYouTubeModal</code>）：
+<ul>
+<li>顶部 <strong>Live 状态卡</strong>：平台图标 + 平台名 + 绿色 <strong>Live</strong> 徽标 + “Your podcast is live on {平台}.” 文案（<code>XxxLiveCard</code>，随已提交视图显示/隐藏）。</li>
+<li>隐藏提交表单（<code>XxxSubmitWrap</code> / Step 1 / Step 2 URL 输入框）与 “Already submitted? Save your existing URL here” 链接。</li>
+<li>下方显示 <strong>Your podcast URL in {平台}</strong> + 该平台 URL（无已存 URL 时使用各平台默认/示例 URL，见 <code>distPlatformData.url</code>）+ <strong>View→</strong>。</li>
+<li>URL 下方显示 <strong>Delete the podcast URL from Podbean</strong> 链接（从本页删除后保持已提交视图并恢复默认 URL，不弹回表单）。</li>
+</ul></li>
+</ul></li>
+</ul>
+<hr />
+<h3 id="podcast-apps-upgrade分发升级推广页">3. Podcast apps-upgrade（分发升级推广页）</h3>
+<p><strong>定位</strong>：面向未升级用户的推广落地页，引导用户升级后启用分发。</p>
+<ul>
+<li>顶部 <strong>“Distribute to”</strong> 平台信任网格：展示 10 个主流平台 logo（Apple Podcasts、Spotify、YouTube、Podbean App、Amazon Music、iHeartRadio、Player FM、Podchaser、Boomplay、Listen Notes）。</li>
+<li>中部推广横幅：
+<ul>
+<li>标题：“Your voice deserves to be heard everywhere.”</li>
+<li>副文案：说明一键发布到各大平台、触达更多听众。</li>
+<li><strong>“Upgrade to Distribute”</strong> 按钮 → 跳转到 Podcast Apps 列表页。</li>
+</ul></li>
+</ul>
+<hr />
+<h3 id="podcast-apps-preaction分发前准备清单">4. Podcast apps-preaction（分发前准备清单）</h3>
+<p><strong>定位</strong>：在正式分发前，引导用户完成 5 项通用准备。</p>
+<ul>
+<li>同样有 “Distribute to” 平台信任网格。</li>
+<li><strong>“Complete these items before distributing.”</strong> 清单，共 5 步：
+<ol type="1">
+<li><strong>Podcast title &amp; description</strong>（播客标题与描述）— 默认已完成（显示对勾）</li>
+<li><strong>Upload podcast cover art</strong>（上传封面）— 点击 <strong>Upload</strong> 标记完成</li>
+<li><strong>Podcast category</strong>（选择分类）— 点击 <strong>Add</strong> 标记完成</li>
+<li><strong>First episode</strong>（发布第一集）— 点击 <strong>Publish</strong> 标记完成</li>
+<li><strong>Podcast language</strong>（选择语言）— 默认已完成（显示对勾）</li>
+</ol></li>
+<li>每步有编号（01-05）、图标、名称；未完成步骤提供动作按钮，点击后切换为对勾（<code>completeStepPreaction</code>）。</li>
+<li>顶部显示计数：“Complete all 5 steps”。</li>
+<li><strong>不含 MP3 步骤（2026-08-07 移除）</strong>：“Generate MP3 for Video Episodes” 不再作为分发前通用步骤——它是条件性设置（仅 feed 含视频单集时相关），改由 Spotify / Amazon / iHeartRadio 提交时的门槛弹窗与 Podcast Apps 页的下架预警横幅按需引导。</li>
+</ul>
+<hr />
+<h3 id="social-share社交分享">5. Social Share（社交分享）</h3>
+<p><strong>定位</strong>：将播客单集自动分享到社交平台，需先连接账号。</p>
+<ul>
+<li>页面说明：“Auto-share your podcast episodes to social platforms. Click <strong>Connect</strong> to link your account.”</li>
+<li><strong>平台列表</strong>（<code>platformData</code>）：
+<ul>
+<li><strong>Facebook</strong></li>
+<li><strong>LinkedIn</strong></li>
+<li><strong>YouTube</strong></li>
+<li><strong>Tumblr</strong></li>
+<li><strong>WordPress</strong></li>
+</ul></li>
+<li><strong>连接流程</strong>：
+<ol type="1">
+<li>点击平台卡片的 <strong>Connect</strong> → 打开授权模态框（OAuth 风格）：
+<ul>
+<li>显示平台图标、标题“Connect to {平台}”、副标题、3 条权限说明。</li>
+<li>点击 <strong>Authorize</strong> → 切换为成功视图（显示对勾 + 成功文案），约 1.5 秒后自动关闭。</li>
+</ul></li>
+<li>连接成功后：卡片按钮变为 <strong>Remove</strong>，同时出现 <strong>Edit</strong> 按钮。</li>
+<li>点击 <strong>Edit</strong> → 打开 {平台} Settings 模态框（Save Settings）。</li>
+<li>点击 <strong>Remove</strong> → 断开连接，按钮恢复为 Connect。</li>
+</ol></li>
+</ul>
+<hr />
+<h3 id="podcast-website播客网站管理">6. Podcast Website（播客网站管理）</h3>
+<p><strong>定位</strong>：管理播客官网的主题、域名、页面。</p>
+<h4 id="三个-tab">6.1 三个 Tab</h4>
+<ul>
+<li><strong>Theme Templates</strong>（主题模板，默认）</li>
+<li><strong>Website URL</strong>（网站域名）</li>
+<li><strong>Pages</strong>（页面管理）</li>
+</ul>
+<h4 id="theme-templates">6.2 Theme Templates</h4>
+<ul>
+<li>顶部展示当前主题 <strong>DoubleTree 1.0</strong>（by Podbean）：
+<ul>
+<li><strong>预览图</strong> + <strong>Web / Mobile</strong> 视图切换按钮（切换不同截图）。</li>
+<li>主题介绍文案。</li>
+<li><strong>Customize</strong> 按钮（自定义主题设置）。</li>
+<li><strong>Visit Website ↗</strong> 链接 → 打开网站（域名已保存时打开自定义域名，否则弹出提示）。</li>
+</ul></li>
+<li><strong>Alternative Templates</strong> 备选主题区：
+<ul>
+<li><strong>Vertex</strong> 主题卡片 + <strong>Activate Now</strong> 按钮（激活）。</li>
+<li>占位卡片：“More designs coming soon”（更多设计即将上线）。</li>
+</ul></li>
+</ul>
+<h4 id="website-url">6.3 Website URL</h4>
+<p>两种域名方案，互斥切换（<code>toggleUrlSection</code>）：</p>
+<ol type="1">
+<li><strong>Built-in Domain（内建域名，默认）</strong>
+<ul>
+<li>说明：始终可通过该域名访问，永不过期；修改会影响播客 feed URL。</li>
+<li>编辑：<code>{前缀}.podbean.com</code> 前缀可编辑。</li>
+</ul></li>
+<li><strong>Use a domain I own（自定义域名，可选）</strong>
+<ul>
+<li>需完成两步：<strong>① 设置 CNAME DNS 记录</strong>（映射到 <code>pbcdn2.podbean.com</code>，附 FAQ 链接）；<strong>② 输入并连接自有域名</strong>。</li>
+<li>保存成功后显示 <strong>Connected</strong> 徽标 + 可断开连接（带确认模态框）。</li>
+</ul></li>
+</ol>
+<ul>
+<li>底部 <strong>Save</strong> 按钮 → 保存当前域名方案并弹窗确认。</li>
+</ul>
+<h4 id="pages">6.4 Pages</h4>
+<ul>
+<li>顶部子 Tab：<strong>V1</strong>（空模板视图）/ <strong>V2</strong>（列表视图）+ <strong>“+ New Page”</strong> 按钮。</li>
+<li><strong>V1（空视图）</strong>：无页面内容时的空状态提示（“No page content yet”），可“Learn more”。</li>
+<li><strong>V2（列表视图）</strong>：
+<ul>
+<li>表格列：全选勾选、Title、Author、When（创建时间）、右侧操作（kebab 三点菜单）。</li>
+<li>点击行 → 编辑页面（<code>editPage</code>）；Title 悬停显示下划线表示可点击。</li>
+<li>右侧三点菜单含 <strong>View</strong>（眼睛图标）与 <strong>Edit</strong> 两个动作（原 Title 列的可见性眼睛图标已移入此处）。</li>
+<li><strong>批量选择</strong>：勾选任意行后顶部出现批量操作条（全选勾选框 + “N selected” + <strong>Delete</strong> 文字链接）；点 Delete 弹出确认弹窗（“Delete Pages / Are you sure you want to delete the selected page(s)? This action cannot be undone.”，Cancel / Delete），确认后删除所选行；删空后回到 V1 空视图。</li>
+</ul></li>
+<li><strong>页面编辑器（Publish Page / Edit Page）</strong>（<code>pageEditorContainer</code> 全屏 overlay）：
+<ul>
+<li>由 “+ New Page”（新建，标题 “Publish Page”）或行编辑（标题 “Edit Page”）打开。</li>
+<li>顶栏：左侧 <strong>Cancel</strong>（描边按钮）、居中标题、右侧 <strong>Publish</strong>（深色胶囊按钮）。</li>
+<li>字段：
+<ul>
+<li><strong>Title</strong>（必填，标签带红色 <code>*</code>）：输入框为静默态（浅灰底、无描边；hover 出细线；focus 绿框 + 白底 + 光晕）。未填写直接点 Publish 时，输入框变红框并在下方显示红色报错 “Add a title to publish this page.”，开始输入后自动清除。</li>
+<li><strong>Description</strong>（可选）：富文本编辑器——块级格式下拉（Paragraph / Heading 1 / Heading 2）+ 字体/字号下拉（展示）+ 工具栏（加粗 / 斜体 / 下划线 / 无序列表 / 有序列表 / 插入链接 / 代码块），内容可编辑。</li>
+</ul></li>
+<li>保存（<strong>Publish</strong>）：校验 Title 必填；新建时把页面加入 V2 列表并切到列表视图，编辑时更新该行标题；成功后 toast “Page published”。</li>
+<li>取消（<strong>Cancel</strong>）：存在未保存改动时弹出 <strong>Unsaved Changes</strong> 确认弹窗（Leave = 放弃改动并退出 / Stay = 留在编辑页）；无改动时直接关闭。</li>
+</ul></li>
+</ul>
+<hr />
+<h3 id="embed-player嵌入播放器">7. Embed Player（嵌入播放器）</h3>
+<p><strong>定位</strong>：生成可在外部网站嵌入的多集播放器代码。</p>
+<ul>
+<li><strong>左侧预览区</strong>：
+<ul>
+<li>可视化播放器预览（加载时显示 “Loading player preview…”）。</li>
+<li><strong>View Embed Code</strong> 切换 → 显示/隐藏嵌入代码 textarea。</li>
+</ul></li>
+<li><strong>操作按钮</strong>：
+<ul>
+<li><strong>Copy Embed Code</strong> → 复制嵌入代码。</li>
+<li><strong>Customize Your Player ↗</strong> → 打开自定义面板。</li>
+</ul></li>
+<li><strong>自定义面板（Player Customization overlay）</strong>：
+<ul>
+<li>顶栏：返回 / 标题 / <strong>Cancel</strong> / <strong>Save</strong>（Save 在无改动时禁用）。</li>
+<li>左侧：实时预览（<code>epPlayerCustom</code>）。</li>
+<li>右侧工具栏（主视图两个入口项）：
+<ul>
+<li><strong>Content Controls（内容控制）</strong>：
+<ul>
+<li>Episode Filter：Latest N Episodes / Earliest N Episodes / Publish Time / Season NO. / Tags；按选择显示对应条件项（每项前带字段标签名，如 Season / Tags 标签在前、控件在右）：Max No. of Episodes / Start &amp; End Date / Season / Tags。</li>
+<li>Display Order：Episodic (From New to Old) / Serial (From Old to New)。</li>
+<li>Share / Download：Show / Hide。</li>
+<li>Logo link：Episode page / Podcast page / None。</li>
+</ul></li>
+<li><strong>Appearance and Layout（外观与布局）</strong>：
+<ul>
+<li>Player color / Button color（色板）。</li>
+<li>Font color、Font、Height（含 Other Size 自定义高度）、Right-to-left。</li>
+<li><strong>Customize CSS</strong>（默认收起）：点击展开文本框，可输入自定义 CSS 进一步定制播放器；Reset to default 会一并清空。</li>
+</ul></li>
+</ul></li>
+<li>修改后实时更新预览；点击 <strong>Save</strong> 保存并返回。</li>
+<li>离开时若存在未保存改动，弹出 <strong>Leave/Stay 确认对话框</strong>（<code>epConfirmOverlay</code>），防止误丢改动。</li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="三分发提交子页面">三、分发提交子页面</h2>
+<p>以下子页面从 <strong>Podcast Apps</strong> 列表点击对应平台卡片进入，均使用“面包屑返回 Podcast Apps + 底部浮动操作栏”的布局。</p>
+<blockquote>
+<p><strong>提交后状态（Pending）</strong>：通过底部 <strong>Submit</strong> 提交的平台（Apple / Spotify / Amazon Music / iHeartRadio / Player FM / Podchaser / Boomplay）会进入<strong>待审核（Pending）</strong>状态——<strong>提交后停留在提交页</strong>，顶部显示琥珀色 <strong>“Submission Pending Approval”</strong> 横幅，卡片显示琥珀色时钟 + <strong>Pending</strong>；审核通过后的 Live 状态（绿色对勾 + Live 状态卡 + 平台 URL 视图）在 <strong>Podcast Apps 2</strong> 页面演示。<strong>Listen Notes / YouTube</strong> 为自助提交平台，保存 URL 即视为已上线，不经过 Pending。</p>
+</blockquote>
+<h3 id="apple-podcasts-提交页">4.1 Apple Podcasts 提交页</h3>
+<p><strong>三个并行 Tab</strong>（<code>switchAppleTab</code>）：<strong>Submit | Enable HLS Video | Apple Podcast Subscription</strong>。</p>
+<h4 id="tab-1-submit">Tab 1 — Submit</h4>
+<ul>
+<li><strong>已提交场景</strong>：“Already submitted your podcast to Apple Podcasts?” → <strong>Save your existing URL here</strong> 模态（输入 URL 保存；保存后显示 URL + View→ + 删除链接）。</li>
+<li><strong>未提交表单</strong>（<code>appleSubmitWrap</code>）：
+<ul>
+<li><strong>Show Information（必填）</strong>：
+<ul>
+<li>Content Rights（内容版权声明）：两个选项下拉。</li>
+<li>Update Frequency（更新频率）：Weekly / Daily / Biweekly / Monthly / No Set Schedule。</li>
+</ul></li>
+<li><strong>同意条款</strong>：顶部为一个<strong>确认勾选框</strong>（<code>appleAgree</code>），勾选框文字即条款标题「I agree to the Apple Podcasts content requirements」；其下为 3 项条款明细<strong>纯文本</strong>（无独立勾选框）：请求 Podbean 代提交并同意服务条款；确认符合 Apple 内容要求；确认拥有音乐授权。勾选确认框后 Submit 才可点击（2026-08-07 改为单一确认勾选框，取代 Select all + 逐项勾选）。</li>
+<li>底部栏 <strong>Submit</strong> 按钮：所有下拉已选 + 确认勾选框已勾选才可点击。</li>
+</ul></li>
+<li><strong>提交后状态</strong>：
+<ul>
+<li><strong>Pending</strong>（待审核）横幅：“Submission Pending Approval”，审核约 1–5 个工作日。</li>
+<li><strong>Approved</strong>（已批准）横幅 + 显示 Apple 播客 URL（View→）。</li>
+</ul></li>
+<li><strong>Claim 你的播客</strong>（<code>appleClaimSection</code>，批准后出现）：
+<ul>
+<li>标题 “Next, claim your podcast” + 说明（claim 后可启用 HLS Video 与 Subscriptions）。</li>
+<li>输入 <strong>Apple Podcasts claim token</strong>（附 “How to get claim token? →” 帮助链接）。</li>
+<li>底部栏 <strong>Save</strong> → 保存 token，显示成功横幅。</li>
+<li><strong>Token 持久化</strong>：保存后 token 仍保留在输入框，claim 区域保持可见，便于 Apple 验证失败时重新输入保存。</li>
+</ul></li>
+</ul>
+<h4 id="tab-2-enable-hls-video">Tab 2 — Enable HLS Video</h4>
+<ul>
+<li><strong>未批准/未 claim</strong>：显示功能介绍卡片（图标 + 说明），不显示具体步骤。</li>
+<li><strong>已批准且已 claim</strong>：直接显示 6 步设置步骤（登录 Apple Podcasts Connect → Account &gt; Keys → + → 命名 → Generate/Download → 上传 API Key 文件），底部 <strong>Choose File</strong> 选择 <code>.p8/.json/.txt/.key</code> 文件；底部栏 <strong>Save</strong> 保存（选中文件后才可点击）。</li>
+</ul>
+<h4 id="tab-3-apple-podcast-subscription">Tab 3 — Apple Podcast Subscription</h4>
+<ul>
+<li>同样先显示功能介绍（未批准/未 claim）。</li>
+<li>已批准且已 claim 后，直接显示 4 步设置步骤（发布至少一集 → 注册订阅 → 下载 API Key → 上传 API Key），<strong>Choose File</strong> + 底部栏 <strong>Save</strong>。</li>
+</ul>
+<h4 id="底部栏apple">底部栏（Apple）</h4>
+<ul>
+<li>同一底部栏按当前 Tab / 状态切换按钮：Cancel + Submit（表单）/ Save（claim）/ Save（HLS）/ Save（Subs）。</li>
+</ul>
+<hr />
+<h3 id="spotify-提交页">4.2 Spotify 提交页</h3>
+<ul>
+<li><strong>已提交场景</strong>：可保存已有 Spotify URL（View→ / 删除）。</li>
+<li><strong>未提交表单</strong>：
+<ul>
+<li><strong>同意条款</strong>：顶部为一个<strong>确认勾选框</strong>（<code>spotifyAgree</code>），勾选框文字即条款标题「I agree to the Spotify content requirements」；其下为 3 项条款明细<strong>纯文本</strong>（无独立勾选框）。勾选确认框后 Submit 才可点击（2026-08-07 改为单一确认勾选框，取代 Select all + 逐项勾选）。</li>
+<li>底部栏 <strong>Submit</strong>：勾选确认框即可点击。</li>
+<li><strong>提交时 MP3 门槛（三个仅音频平台统一，2026-08-07 由常驻要求卡改为提交时弹窗）</strong>：当 feed 含视频单集（<code>feedHasVideo</code>，Podcast Apps 页顶部 <strong>Feed</strong> 演示开关切换）且全局 <strong>Generate MP3 for Video Episodes</strong>（<code>mp3ForVideoEnabled</code>）未开启时，点击 <strong>Submit</strong> 弹出 <strong>mp3GateModal</strong> 提醒：「Your feed includes video episodes. Audio-only platforms require an MP3 audio version of video episodes」。弹窗内<strong>直接展示 “Generate MP3 for Video Episodes” 的说明文字</strong>（说明自动为视频单集生成 MP3 以兼容仅音频平台、并为支持视频的平台提供 HLS 视频流），<strong>无 Off 徽标、无 What’s this? 链接</strong>。按钮 <strong>Cancel</strong>（关闭弹窗、不提交、无 toast；再点 Submit 仍会弹窗）与 <strong>Enable</strong>（调用 <code>enableMp3AndSubmit()</code> 就地开启全局设置 + 成功 toast，并<strong>自动继续完成被拦截的本次提交</strong>，无需再次点击 Submit）。纯音频 feed（无视频单集）不弹窗，可直接提交。</li>
+<li>全局设置 <code>mp3ForVideoEnabled</code> 由 <code>enableMp3ForVideo()</code> 统一开启（信息弹窗 / 预警横幅的 Enable 调用它；门槛弹窗的 Enable 调用 <code>enableMp3AndSubmit()</code>，开启后自动继续提交）。</li>
+</ul></li>
+</ul>
+<hr />
+<h3 id="youtube-提交页">4.3 YouTube 提交页</h3>
+<ul>
+<li><strong>Step 1 — 提交 RSS feed 到 YouTube</strong>：引导在 YouTube Studio 中 <strong>Create New podcast</strong> → <strong>Submit RSS feed</strong>；附 <strong>Ownership Verification Email</strong>（所有权验证邮箱）说明模态；<strong>Open YouTube Studio</strong> 按钮跳转。</li>
+<li><strong>Step 2 — 保存你的 YouTube podcast URL</strong>：在 YouTube Studio 获取播放列表地址并粘贴保存。</li>
+<li>已提交场景可保存已有 URL。</li>
+</ul>
+<hr />
+<h3 id="amazon-music-audible-提交页">4.4 Amazon Music / Audible 提交页</h3>
+<ul>
+<li><strong>已提交场景</strong>：可保存已有 Amazon Music/Audible URL（View→ / 删除）。</li>
+<li><strong>未提交表单</strong>：
+<ul>
+<li><strong>Content License Agreement（内容授权协议）</strong>：展示 Amazon Music/Audible 的完整授权协议文本（可滚动阅读）。</li>
+<li>勾选 <strong>“I accept Amazon Music/Audible agreement”</strong> 表示接受该协议。</li>
+<li>底部栏 <strong>Submit</strong>：勾选接受协议即可点击；若 feed 含视频单集且 <code>mp3ForVideoEnabled</code> 关闭，点击时同样弹出 <strong>mp3GateModal</strong> 拦截（Cancel 不提交；Enable 就地开启并<strong>自动继续完成本次提交</strong>）；提交后进入 Pending 待审核状态并停留在提交页。</li>
+</ul></li>
+<li><strong>与 Apple / Spotify / YouTube 一致</strong>：整卡可点击进入；已提交后悬停卡片显示 Manage 提示。</li>
+</ul>
+<hr />
+<h3 id="iheartradio-提交页">4.5 iHeartRadio 提交页</h3>
+<ul>
+<li><strong>已提交场景</strong>：可保存已有 iHeartRadio URL（View→ / 删除）。</li>
+<li><strong>未提交表单</strong>：
+<ul>
+<li><strong>6 项要求/条款</strong>：顶部为一个<strong>确认勾选框</strong>（<code>iheartradioAgree</code>），勾选框文字即条款标题「I agree to the iHeartRadio content requirements」；其下为 6 项条款明细<strong>纯文本</strong>（无独立勾选框）：请求 Podbean 代提交 + 同意服务条款；已查阅内容要求；确认音乐授权；已知晓 iHeartMedia 不保证内容采用/发布且可能随时移除；同意 Content License Agreement / Terms of Use 且不违反内容政策；同意遵守 DMCA 并保证提交信息真实授权（2026-08-07 改为单一确认勾选框，取代 Select all + 逐项勾选）。</li>
+<li>底部栏 <strong>Submit</strong>：勾选确认框即可点击；若 feed 含视频单集且 <code>mp3ForVideoEnabled</code> 关闭，点击时同样弹出 <strong>mp3GateModal</strong> 拦截（Cancel 不提交；Enable 就地开启并<strong>自动继续完成本次提交</strong>）；提交后进入 Pending 待审核状态并停留在提交页。</li>
+<li>页面底部说明：上线后 iHeartRadio URL 会显示在此处，并会邮件通知。</li>
+</ul></li>
+<li><strong>与 Apple / Spotify / YouTube 一致</strong>：整卡可点击进入；已提交后悬停卡片显示 Manage 提示。</li>
+</ul>
+<hr />
+<h3 id="player-fm-提交页">4.6 Player FM 提交页</h3>
+<ul>
+<li><strong>已提交场景</strong>：可保存已有 Player FM URL（View→ / 删除）。</li>
+<li><strong>未提交表单</strong>：
+<ul>
+<li><strong>3 项要求/条款</strong>：顶部为一个<strong>确认勾选框</strong>（<code>playerfmAgree</code>），勾选框文字即条款标题「I agree to the Player FM content requirements」；其下为 3 项条款明细<strong>纯文本</strong>（无独立勾选框）：请求 Podbean 代提交 + 同意服务条款；已查阅内容要求；确认音乐授权（2026-08-07 改为单一确认勾选框）。</li>
+<li>底部栏 <strong>Submit</strong>：勾选确认框后才可点击；提交后该平台标记为“已提交”并返回列表。</li>
+</ul></li>
+<li><strong>与 Apple / Spotify / YouTube 一致</strong>：整卡可点击进入；已提交后悬停卡片显示 Manage 提示。</li>
+</ul>
+<hr />
+<h3 id="listen-notes-提交页">4.7 Listen Notes 提交页</h3>
+<p>参考 <strong>YouTube 提交页</strong> 的两步流程，<strong>两步在页面上同时展示</strong>：</p>
+<ul>
+<li><strong>Step 1 — 提交到 Listen Notes（用户自助提交）</strong>：
+<ul>
+<li>引导文案明确说明：<strong>需要用户自己到 Listen Notes 网站提交播客，Podbean 不能代为提交</strong>（“Listen Notes requires you to submit your podcast yourself — Podbean can’t do it on your behalf”）。</li>
+<li>展示 <strong>Your Podcast Feed</strong>（只读输入框，显示当前播客 RSS Feed URL）+ <strong>Copy</strong> 按钮（一键复制 feed URL，成功后按钮短暂变为 “Copied!”）。</li>
+<li>说明提交时 Listen Notes 会要求填写播客信息 + RSS Feed，并提示粘贴上方复制的 feed。</li>
+<li><strong>Submit on Listen Notes</strong> 按钮 → 新标签页打开 Listen Notes 提交页。</li>
+<li>说明：审核可能需要数周，通过后收到确认邮件；上线后把 Listen Notes URL 粘贴到 Step 2。</li>
+</ul></li>
+<li><strong>Step 2 — 保存你的 Listen Notes URL</strong>：
+<ul>
+<li>文案：“Once you’ve received your URL, copy + paste it here to access it in the future.”</li>
+<li>输入 <strong>Your podcast URL in Listen Notes</strong>（必填，附示例 URL）。</li>
+<li>输入 URL 后底部栏显示 <strong>Save</strong>；保存后该平台标记为“已提交”并返回列表。</li>
+</ul></li>
+<li><strong>已提交场景</strong>：可保存已有 Listen Notes URL（View→ / 删除）。</li>
+<li><strong>“Already submitted”</strong> 链接：直接滚动定位到 Step 2 的 URL 输入框。</li>
+<li><strong>与 Apple / Spotify / YouTube 一致</strong>：整卡可点击进入；已提交后悬停卡片显示 Manage 提示。</li>
+</ul>
+<hr />
+<h3 id="podchaser-提交页">4.8 Podchaser 提交页</h3>
+<ul>
+<li><strong>已提交场景</strong>：可保存已有 Podchaser URL（View→ / 删除）。</li>
+<li><strong>未提交表单</strong>：
+<ul>
+<li><strong>3 项要求/条款</strong>：顶部为一个<strong>确认勾选框</strong>（<code>podchaserAgree</code>），勾选框文字即条款标题「I agree to the Podchaser content requirements」；其下为 3 项条款明细<strong>纯文本</strong>（无独立勾选框）：请求 Podbean 代提交 + 同意服务条款；已查阅内容要求；确认音乐授权（2026-08-07 改为单一确认勾选框）。</li>
+<li>底部栏 <strong>Submit</strong>：勾选确认框后才可点击；提交后该平台标记为“已提交”并返回列表。</li>
+</ul></li>
+<li><strong>页面底部说明</strong>：上线后 Podchaser URL 会显示在此处，并会邮件通知。</li>
+<li><strong>与 Apple / Spotify / YouTube 一致</strong>：整卡可点击进入；已提交后悬停卡片显示 Manage 提示。</li>
+</ul>
+<hr />
+<h3 id="boomplay-提交页">4.9 Boomplay 提交页</h3>
+<ul>
+<li><strong>已提交场景</strong>：可保存已有 Boomplay URL（View→ / 删除）。</li>
+<li><strong>未提交表单</strong>：
+<ul>
+<li><strong>3 项要求/条款</strong>：顶部为一个<strong>确认勾选框</strong>（<code>boomplayAgree</code>），勾选框文字即条款标题「I agree to the Boomplay content requirements」；其下为 3 项条款明细<strong>纯文本</strong>（无独立勾选框）：请求 Podbean 代提交 + 同意服务条款；已查阅 Boomplay 内容要求（链接至 <code>https://www.boomplay.com/term/</code>）；确认音乐授权（2026-08-07 改为单一确认勾选框）。</li>
+<li>底部栏 <strong>Submit</strong>：勾选确认框后才可点击；提交后该平台标记为“已提交”并返回列表。</li>
+</ul></li>
+<li><strong>页面底部说明</strong>：上线后 Boomplay URL 会显示在此处，并会邮件通知。</li>
+<li><strong>与 Apple / Spotify / YouTube 一致</strong>：整卡可点击进入；已提交后悬停卡片显示 Manage 提示。</li>
+</ul>
+<hr />
+<h3 id="podbean-app-信息页">4.10 Podbean App 信息页</h3>
+<p><strong>定位</strong>：宿主平台，播客自动在 Podbean App 上线，<strong>无需提交动作</strong>；点击卡片进入信息页，用于品牌展示与推广。</p>
+<ul>
+<li><strong>顶部介绍</strong>：“Your podcast will be submitted to Podbean App automatically.”（说明播客自动上线）。</li>
+<li><strong>Badge options 标题下方</strong>：“Point people to your podcast page from around the web. Just copy and paste the code to embed them anywhere on your blog or website.”（引导用户复制代码嵌入博客/网站）。</li>
+<li><strong>下载推荐</strong>：提示“Listen on the Podbean App”（下载 App 听播客），附 <strong>Get the App</strong> 按钮（新标签页打开下载页）。</li>
+<li><strong>Badge 推广代码生成器</strong>（参考 Podbean 官方 badge）：
+<ul>
+<li><strong>Color</strong>：白 / 黑 两种 badge 缩略图（点击切换，选中高亮边框）。</li>
+<li><strong>Size</strong>：150x56 (small) / 300x111 (medium) / 600x222 (large) 三档切换。</li>
+<li><strong>实时预览</strong>：按所选颜色与尺寸展示 badge 预览。</li>
+<li><strong>Grab the code</strong>：生成 HTML 嵌入代码（<code>&lt;a href="播客页"&gt;&lt;img src="badge 图"&gt;&lt;/a&gt;</code>）；<strong>Copy</strong> 一键复制（成功后短暂变为 Copied!）。</li>
+</ul></li>
+<li>无底部操作栏；面包屑返回 Podcast Apps。</li>
+<li>整卡可点击进入；已提交后悬停卡片显示 Manage 提示。</li>
+</ul>
+<hr />
+<h2 id="四状态与数据要点">四、状态与数据要点</h2>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>概念</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>distSubmitted</code></td>
+<td>各平台“已提交”标记（内存对象），决定卡片是否进入已提交/Pending 状态</td>
+</tr>
+<tr class="even">
+<td><code>distPending</code></td>
+<td>各平台“待审核”标记（内存对象）；<code>submitted=true, pending=true</code> → 卡片 Pending + 提交页 amber 横幅；<code>pending=false</code> → 绿色对勾 + Live 视图。保存已有 URL / <code>simulateDistApproval</code> / <code>simulateAppleApproval</code> 都会清除</td>
+</tr>
+<tr class="odd">
+<td><code>mp3ForVideoEnabled</code></td>
+<td>Feed 层全局设置“为视频单集生成 MP3 音频”。由 <code>enableMp3ForVideo()</code> 开启（信息弹窗 / 预警横幅的 Enable 按钮），开启后弹出成功 toast；门槛弹窗的 Enable 走 <code>enableMp3AndSubmit()</code>，就地开启并自动继续完成被拦截的提交。仅在 <code>feedHasVideo</code>（feed 含视频单集）时成为 Spotify / Amazon Music / iHeartRadio Submit 的门槛</td>
+</tr>
+<tr class="even">
+<td><code>feedHasVideo</code></td>
+<td>演示状态（Podcast Apps 页顶部 <strong>Feed</strong> 开关：Audio-only / With video），模拟 RSS feed 是否含视频单集。<code>true</code> 且 <code>mp3ForVideoEnabled=false</code> 时：向音频平台提交会被 <code>mp3GateModal</code> 拦截；若已提交过 Spotify / Amazon / iHeartRadio 任一平台，Podcast Apps 页顶部显示琥珀色下架预警横幅、对应平台卡片显示琥珀色警示图标</td>
+</tr>
+<tr class="odd">
+<td><code>appleSubmitted / appleApproved / appleClaimed</code></td>
+<td>Apple 提交流程状态机：未提交 → 提交待审 → 已批准 → 已 claim</td>
+</tr>
+<tr class="even">
+<td><code>appleClaimViaToken</code></td>
+<td>是否通过 token 完成 claim；为 true 时 claim 区域保留以便重新输入</td>
+</tr>
+<tr class="odd">
+<td><code>currentAppleTab</code></td>
+<td>Apple 提交页当前 Tab（submit / hls / subs）</td>
+</tr>
+<tr class="even">
+<td><code>connectedPlatforms</code></td>
+<td>Social Share 各平台连接状态（内存对象）</td>
+</tr>
+<tr class="odd">
+<td><code>domainSaved / domainValue</code></td>
+<td>Podcast Website 自定义域名保存状态</td>
+</tr>
+<tr class="even">
+<td>底部栏模式</td>
+<td>依据当前页与状态显示 Submit / Save 按钮，统一“Cancel + 主操作”结构</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="五交互与边界情况">五、交互与边界情况</h2>
+<ol type="1">
+<li><strong>页面切换</strong>：切换子菜单时，Apple / Spotify / Amazon / iHeartRadio / Player FM / Listen Notes / Podchaser / Boomplay 底部栏会被强制隐藏，避免残留。</li>
+<li><strong>Apple claim 失败场景</strong>：token 保存后仍可见、可编辑、可再次保存；编辑 token 时成功横幅自动隐藏。</li>
+<li><strong>HLS / Subscriptions 门槛</strong>：必须先 <strong>已批准且已 claim</strong> 才显示设置步骤；否则只显示功能介绍。</li>
+<li><strong>Apple 表单校验</strong>：Content Rights、Update Frequency、3 个条款全部完成，Submit 才可点击。</li>
+<li><strong>Spotify 表单校验</strong>：3 个条款全部勾选即可点击 Submit；若 feed 含视频且 MP3 关闭，点击时弹出 <code>mp3GateModal</code> 拦截（Cancel 不提交；Enable 就地开启并<strong>自动继续完成本次提交</strong>）。</li>
+<li><strong>Amazon 表单校验</strong>：勾选接受 Content License Agreement 即可点击 Submit；同样受提交时 MP3 门槛约束（feed 含视频 + MP3 关闭 → 弹窗拦截）。 6b. <strong>iHeartRadio 表单校验</strong>：6 项条款全部勾选即可点击 Submit；同样受提交时 MP3 门槛约束。 6c. <strong>MP3 门槛在提交时，无每页开关</strong>：<code>mp3ForVideoEnabled</code> 是 Feed 层唯一全局设置，由 <code>enableMp3ForVideo()</code> 开启（成功 toast，约 2.2 秒自动消失）。三个仅音频平台不再有常驻开关/要求条；门槛移到点击 Submit 时的 <code>mp3GateModal</code>——弹窗直接展示 “Generate MP3 for Video Episodes” 的说明文字（无 Off 徽标 / What’s-this 链接）。弹窗 <strong>Enable</strong> 调用 <code>enableMp3AndSubmit()</code>：就地开启全局设置并<strong>自动继续完成被拦截的本次提交</strong>（<code>mp3GatePendingSubmit</code> 记住被拦截的平台 key，Cancel 时清除）。判据为内容驱动：仅 <code>feedHasVideo &amp;&amp; !mp3ForVideoEnabled</code> 才拦截，纯音频 feed 完全不受影响。 6d. <strong>发布视频后的下架预警</strong>：当 <code>feedHasVideo=true</code>、<code>mp3ForVideoEnabled=false</code>、且已提交过 Spotify / Amazon / iHeartRadio 任一平台时，Podcast Apps 页顶部显示琥珀色预警横幅（「Video published, MP3 for video episodes off」+ 说明音频平台可能下架 + <strong>Enable now</strong> 一键开启），对应平台卡片显示琥珀色警示图标（含 title 提示）；预警在解决前持续显示，开启 MP3 后自动消失。 6e. <strong>preaction 不含 MP3</strong>：preaction 清单回到 5 步通用项；MP3 不再作为分发前通用步骤（仅当 feed 有视频时由提交流程与预警横幅按需引导）。</li>
+<li><strong>自定义域名</strong>：未输入域名时 Save 会提示；断开域名需经确认模态框。</li>
+<li><strong>Embed Player</strong>：有未保存改动时离开会弹出 Leave/Stay 确认，防止丢失。</li>
+<li><strong>单一确认勾选框（确认式条款）</strong>：多勾选平台提交页（Apple / Spotify / iHeartRadio / Player FM / Podchaser / Boomplay）的条款区为<strong>一个确认勾选框</strong>（<code>label.check-row</code>，勾选框文字即条款标题并加粗，采用第一人称确认句「I agree to the {平台} content requirements」，如 <code>appleAgree</code> / <code>spotifyAgree</code> / <code>iheartradioAgree</code> / <code>playerfmAgree</code> / <code>podchaserAgree</code> / <code>boomplayAgree</code>），标题下方为条款明细<strong>无序列表</strong>（<code>ul.agree-terms</code>，灰色圆点 + 14px <code>#475569</code> 文字，无边框无容器，2026-08-07 样式优化）。各页 <code>checkXxxAgreements</code> 仅校验该确认框与必填项，勾选后 Submit 才可点击。底部操作栏<strong>有交互才出现</strong>（勾选确认框 / 操作表单字段时才显示）。Amazon 为单协议接受勾选框（<code>amazonAcceptCheck</code>），结构一致。</li>
+</ol></main>
+</div>
+<script>
+(function(){
+  var heads = Array.prototype.slice.call(document.querySelectorAll('.content h1[id],.content h2[id],.content h3[id],.content h4[id]'));
+  var links = {};
+  document.querySelectorAll('.toc a').forEach(function(a){
+    var id = (a.getAttribute('href')||'').replace('#','');
+    if(id) links[id] = a;
+  });
+  var activeId = null;
+  function onScroll(){
+    var y = window.scrollY + 140;
+    var cur = null;
+    heads.forEach(function(h){ if(h.offsetTop <= y) cur = h; });
+    var id = cur ? cur.id : null;
+    if(id !== activeId){
+      activeId = id;
+      Object.keys(links).forEach(function(k){ links[k].classList.remove('active'); });
+      if(id && links[id]) links[id].classList.add('active');
+    }
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+})();</script>
+</body>
+</html>
