@@ -3189,6 +3189,29 @@
       font-weight: 600;
     }
 
+    /* ── Embed Player (Private) ──── */
+    .ep-private-connect { margin-top:20px; }
+    .ep-private-connect-head { display:flex; align-items:center; justify-content:space-between; }
+    .ep-private-connect-label { font-size:14px; font-weight:600; color:var(--text); display:flex; align-items:center; gap:4px; }
+    .ep-private-connect-desc { font-size:13px; color:var(--text-secondary); margin-top:6px; line-height:1.5; }
+    .ep-private-panel { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:1000; align-items:center; justify-content:center; padding:24px; }
+    .ep-private-panel.show { display:flex; }
+    .ep-private-panel-card { background:#fff; border-radius:12px; box-shadow:0 8px 32px rgba(0,0,0,0.15); width:100%; max-width:560px; max-height:80vh; display:flex; flex-direction:column; overflow:hidden; }
+    .ep-private-panel-head { display:flex; align-items:center; justify-content:space-between; padding:18px 24px; border-bottom:1px solid var(--border); }
+    .ep-private-panel-title { font-size:16px; font-weight:600; color:var(--text); }
+    .ep-private-panel-close { background:transparent; border:none; font-size:22px; line-height:1; color:var(--text-secondary); cursor:pointer; padding:0; }
+    .ep-private-panel-body { padding:20px 24px; overflow-y:auto; }
+    .ep-private-panel-add { display:flex; align-items:center; gap:10px; margin-bottom:16px; }
+    .ep-private-panel-add input { flex:1; padding:10px 16px; border:1px solid var(--border); border-radius:50px; font-size:14px; font-family:inherit; color:var(--text); background:#fff; outline:none; }
+    .ep-private-panel-add input:focus { border-color:var(--text); }
+    .ep-private-panel-list { display:flex; flex-direction:column; }
+    .ep-private-panel-item { display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid var(--border); }
+    .ep-private-panel-item:last-child { border-bottom:none; }
+    .ep-private-panel-empty { color:var(--text-secondary); font-size:14px; }
+    .ep-private-connected-url { flex:1 1 auto; font-size:14px; color:var(--text-secondary); word-break:break-all; }
+    .ep-private-delete { background:transparent; border:1px solid #e3c2c2; color:#b24a44; padding:9px 20px; border-radius:50px; font-size:14px; font-weight:600; font-family:inherit; cursor:pointer; white-space:nowrap; }
+    .ep-private-delete:hover { background:#fdf2f2; }
+
     /* ── Embed Player: Drawer Group Label ──── */
     .ep-group-label {
       font-size: 12px;
@@ -3564,6 +3587,7 @@
         <a href="#" onclick="switchSubPage(event, 'social-share')">Social Share</a>
         <a href="#" onclick="switchSubPage(event, 'podcast-website')">Podcast Website</a>
         <a href="#" onclick="switchSubPage(event, 'embeddable-player')">Embed Player</a>
+        <a href="#" onclick="switchSubPage(event, 'embeddable-player-private')">Embed Player (private)</a>
       </div>
     </nav>
   </aside>
@@ -5234,6 +5258,65 @@
             </div>
           </div>
         </div>
+      </div>
+
+      <!-- Embed Player page (Private Player state) -->
+      <div class="page hidden" id="page-embeddable-player-private">
+        <div class="page-toolbar">
+          <div class="page-toolbar-left">
+            <div class="page-toolbar-title">Embed Player</div>
+            <div class="page-toolbar-desc">Embed a multi-episode player on your site.</div>
+          </div>
+        </div>
+
+        <div class="theme-showcase">
+          <!-- Player Preview -->
+          <div class="theme-showcase-preview">
+            <div class="preview-wrap" style="height:auto;overflow:visible;">
+              <div id="epPlayerPrivate" class="ep-visual-player">
+                <div class="ep-vp-loading">Loading player preview...</div>
+              </div>
+            </div>
+
+            <div style="margin-top:16px;">
+              <span class="ep-code-toggle" id="epPrivateCodeToggle" onclick="togglePrivateEmbedCode()">View Embed Code</span>
+            </div>
+            <div class="ep-embed-box" id="privateEmbedCodeBox" style="display:none;margin-top:8px;">
+              <textarea id="privateEmbedCode" readonly="">&lt;iframe title="My Podcast" src="https://www.podbean.org/player-v2/?i=vxv2c-12834-pbblog-playlist&amp;ss=c9c16bd1283d808aa172f8c55746ad03&amp;order=episodic&amp;limit=10&amp;filter=all&amp;skin=1b1b1b&amp;btn-skin=8bbb4e&amp;font-color=auto&amp;size=315&amp;fonts=Arial&amp;share=1&amp;download=1&amp;rtl=0" width="100%" height="315" frameborder="0" scrolling="no"&gt;&lt;/iframe&gt;</textarea>
+            </div>
+            <div style="display:flex;flex-direction:row;gap:24px;align-items:center;margin-top:24px;">
+              <button class="theme-showcase-btn" onclick="copyPrivateEmbedCode()" style="justify-content:center;">
+                Copy Embed Code
+              </button>
+              <a href="#" id="epPrivateCustomizeLink" onclick="openEpCustomization();return false;" style="font-size:16px;font-weight:600;color:var(--text);text-decoration:none;white-space:nowrap;display:none;">Customize Your Player ↗</a>
+            </div>
+
+            <div class="ep-private-connect">
+              <div class="ep-private-connect-head">
+                <div class="ep-private-connect-label">Reference URL <span class="info-icon" tabindex="0"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg><span class="info-tooltip">Reference URL is the URL of the web page which you will embed your podcast.</span></span></div>
+                <button class="btn-topbar-primary" id="epPrivateAddBtn" onclick="openPrivateUrlPanel()">Add</button>
+              </div>
+              <div class="ep-private-connect-desc">Please add a reference URL -- the page URL where you will embed your podcast.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== EMBED PLAYER (PRIVATE) REFERENCE URL MANAGE MODAL ===== -->
+  <div class="ep-private-panel" id="epPrivateUrlPanel" onclick="closePrivateUrlPanel()">
+    <div class="ep-private-panel-card" onclick="event.stopPropagation()">
+      <div class="ep-private-panel-head">
+        <div class="ep-private-panel-title">Reference URLs</div>
+        <button class="ep-private-panel-close" onclick="closePrivateUrlPanel()" aria-label="Close">&times;</button>
+      </div>
+      <div class="ep-private-panel-body">
+        <div class="ep-private-panel-add">
+          <input type="text" id="epPrivateUrlModalInput" placeholder="https://example.com/your-page" onkeydown="if(event.key==='Enter'){event.preventDefault();addPrivateUrlFromPanel();}">
+          <button class="btn-topbar-primary" onclick="addPrivateUrlFromPanel()">Add</button>
+        </div>
+        <div class="ep-private-panel-list" id="epPrivateUrlPanelList"></div>
       </div>
     </div>
   </div>
@@ -7874,6 +7957,9 @@
       }
       if (pageId === 'embeddable-player') {
         updatePlayer();
+      } else if (pageId === 'embeddable-player-private') {
+        renderVisualPlayer('epPlayerPrivate');
+        refreshPrivatePlayerState();
       } else {
         if (epWaveAnimId) { cancelAnimationFrame(epWaveAnimId); epWaveAnimId = null; }
       }
@@ -8537,6 +8623,134 @@
       closeEpCustomization();
     }
 
+    // ===== Embed Player (Private) =====
+    var privateRefUrls = [];
+
+    function refreshPrivatePlayerState() {
+      document.getElementById('epPrivateCustomizeLink').style.display = privateRefUrls.length > 0 ? '' : 'none';
+      document.getElementById('epPrivateAddBtn').textContent = privateRefUrls.length > 0 ? 'Manage' : 'Add';
+    }
+
+    function renderPrivateUrlPanelList() {
+      var list = document.getElementById('epPrivateUrlPanelList');
+      list.innerHTML = '';
+      if (privateRefUrls.length === 0) {
+        var empty = document.createElement('div');
+        empty.className = 'ep-private-panel-empty';
+        empty.textContent = 'No reference URLs yet.';
+        list.appendChild(empty);
+      } else {
+        privateRefUrls.forEach(function(url, idx) {
+          var item = document.createElement('div');
+          item.className = 'ep-private-panel-item';
+          var span = document.createElement('span');
+          span.className = 'ep-private-connected-url';
+          span.textContent = url;
+          var btn = document.createElement('button');
+          btn.className = 'ep-private-delete';
+          btn.type = 'button';
+          btn.textContent = 'Delete';
+          btn.onclick = function() { deletePrivateUrl(idx); };
+          item.appendChild(span);
+          item.appendChild(btn);
+          list.appendChild(item);
+        });
+      }
+    }
+
+    function generatePrivateEmbedCode() {
+      var skin = getSwatchColor('epPlayerColor') || '1b1b1b';
+      var btnSkin = getSwatchColor('epBtnColor') || '654771';
+      var fontColor = document.getElementById('epFontColor').value || 'auto';
+      var height = getEffectiveHeight() || 315;
+      var fonts = document.getElementById('epFont').value || 'Arial';
+      var share = document.getElementById('epShare').value === 'Show' ? '1' : '0';
+      var download = document.getElementById('epDownload').value === 'Show' ? '1' : '0';
+      var rtl = document.getElementById('epRtl').value === 'No' ? '0' : '1';
+      var order = document.getElementById('epDisplayOrder').value;
+      var limit = document.getElementById('epNumEpisodes').value;
+      var filter = document.getElementById('epFilters').value;
+      var orderMap = {'Episodic (From New to Old)':'episodic','Serial (From Old to New)':'old_to_new'};
+      var filterMap = {'latest':'all','earliest':'all','publish_time':'all','season':'all','tags':'all'};
+      var params = [
+        'i=vxv2c-12834-pbblog-playlist',
+        'ss=c9c16bd1283d808aa172f8c55746ad03',
+        'order=' + (orderMap[order] || 'episodic'),
+        'limit=' + (limit === 'All' ? '50' : limit),
+        'filter=' + (filterMap[filter] || 'all'),
+        'skin=' + skin,
+        'btn-skin=' + btnSkin,
+        'font-color=' + fontColor,
+        'size=' + height,
+        'fonts=' + fonts,
+        'share=' + share,
+        'download=' + download,
+        'rtl=' + rtl
+      ];
+      var src = 'https://www.podbean.org/player-v2/?' + params.join('&');
+      var code = '<iframe title="My Podcast" src="' + src + '" width="100%" height="' + height + '" frameborder="0" scrolling="no"></iframe>';
+      document.getElementById('privateEmbedCode').value = code;
+    }
+
+    function togglePrivateEmbedCode() {
+      var box = document.getElementById('privateEmbedCodeBox');
+      var toggle = document.getElementById('epPrivateCodeToggle');
+      if (box.style.display === 'none') {
+        generatePrivateEmbedCode();
+        box.style.display = '';
+        toggle.textContent = 'Hide Embed Code';
+      } else {
+        box.style.display = 'none';
+        toggle.textContent = 'View Embed Code';
+      }
+    }
+
+    function copyPrivateEmbedCode() {
+      var textarea = document.getElementById('privateEmbedCode');
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(textarea.value);
+      }
+      showToast('Embed code copied');
+    }
+
+    function openPrivateUrlPanel() {
+      var panel = document.getElementById('epPrivateUrlPanel');
+      renderPrivateUrlPanelList();
+      panel.classList.add('show');
+      var input = document.getElementById('epPrivateUrlModalInput');
+      input.value = '';
+      input.style.borderColor = '';
+      setTimeout(function() { input.focus(); }, 0);
+    }
+
+    function closePrivateUrlPanel() {
+      document.getElementById('epPrivateUrlPanel').classList.remove('show');
+    }
+
+    function addPrivateUrlFromPanel() {
+      var input = document.getElementById('epPrivateUrlModalInput');
+      var val = (input.value || '').trim();
+      if (!val) {
+        input.style.borderColor = '#d64545';
+        showToast('Enter a reference URL');
+        return;
+      }
+      input.style.borderColor = '';
+      input.value = '';
+      privateRefUrls.push(val);
+      renderPrivateUrlPanelList();
+      refreshPrivatePlayerState();
+      showToast('Reference URL added');
+      input.focus();
+    }
+
+    function deletePrivateUrl(idx) {
+      privateRefUrls.splice(idx, 1);
+      renderPrivateUrlPanelList();
+      refreshPrivatePlayerState();
+      showToast('Reference URL removed');
+    }
+
     function selectSwatch(wrap, groupId) {
       var group = document.getElementById(groupId);
       group.querySelectorAll('.ep-swatch-wrap').forEach(function(w) {
@@ -8712,8 +8926,10 @@
       var container = document.getElementById(containerId);
       if (!container) return;
 
-      var isCustom = containerId !== 'epPlayer';
-      var suffix = isCustom ? 'Custom' : '';
+      var suffix = '';
+      if (containerId === 'epPlayerCustom') suffix = 'Custom';
+      else if (containerId === 'epPlayerPrivate') suffix = 'Private';
+      var isCustom = suffix !== '';
       var waveId = 'epWaveCanvas' + suffix;
       var playBtnId = 'epHeadPlayBtn' + suffix;
 
@@ -8822,18 +9038,21 @@
       html += '</div>';
 
       container.innerHTML = html;
-      // Start wave animation only for the main page player
-      if (!isCustom) {
-        setTimeout(startWaveAnimation, 50);
-      }
+      // Draw the waveform for this player instance
+      setTimeout(function() {
+        if (isCustom) {
+          drawWaveformInto(document.getElementById(waveId));
+        } else {
+          startWaveAnimation();
+        }
+      }, 50);
     }
 
     var epWaveAnimId = null;
     var epWaveTime = 0;
     var epPlaying = false;
 
-    function drawWaveform() {
-      var canvas = document.getElementById('epWaveCanvas');
+    function drawWaveformInto(canvas) {
       if (!canvas) return;
       var rect = canvas.parentElement.getBoundingClientRect();
       var w = rect.width;
@@ -8881,6 +9100,12 @@
       ctx.fill();
     }
 
+    function drawWaveform() {
+      drawWaveformInto(document.getElementById('epWaveCanvas'));
+      drawWaveformInto(document.getElementById('epWaveCanvasCustom'));
+      drawWaveformInto(document.getElementById('epWaveCanvasPrivate'));
+    }
+
     function startWaveAnimation() {
       if (epPlaying) {
         if (epWaveAnimId) cancelAnimationFrame(epWaveAnimId);
@@ -8901,7 +9126,7 @@
     function togglePlaying(containerId) {
       epPlaying = !epPlaying;
       // Update both instances if they exist
-      var ids = [['epHeadPlayBtn', 'epWaveCanvas'], ['epHeadPlayBtnCustom', 'epWaveCanvasCustom']];
+      var ids = [['epHeadPlayBtn', 'epWaveCanvas'], ['epHeadPlayBtnCustom', 'epWaveCanvasCustom'], ['epHeadPlayBtnPrivate', 'epWaveCanvasPrivate']];
       ids.forEach(function(pair) {
         var btn = document.getElementById(pair[0]);
         if (btn) {
@@ -8929,6 +9154,16 @@
       var embedBox = document.getElementById('embedCodeBox');
       if (embedBox && embedBox.style.display !== 'none') {
         generateEmbedCode();
+      }
+
+      // If private player page is active, keep its preview + embed code in sync
+      var privatePage = document.getElementById('page-embeddable-player-private');
+      if (privatePage && !privatePage.classList.contains('hidden')) {
+        renderVisualPlayer('epPlayerPrivate');
+        var privateBox = document.getElementById('privateEmbedCodeBox');
+        if (privateBox && privateBox.style.display !== 'none') {
+          generatePrivateEmbedCode();
+        }
       }
     }
 
