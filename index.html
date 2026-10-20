@@ -3201,9 +3201,10 @@
     .ep-private-panel-title { font-size:16px; font-weight:600; color:var(--text); }
     .ep-private-panel-close { background:transparent; border:none; font-size:22px; line-height:1; color:var(--text-secondary); cursor:pointer; padding:0; }
     .ep-private-panel-body { padding:20px 24px; overflow-y:auto; }
-    .ep-private-panel-add { display:flex; align-items:center; gap:10px; margin-bottom:16px; }
+    .ep-private-panel-add { display:flex; align-items:center; gap:10px; margin-bottom:6px; }
     .ep-private-panel-add input { flex:1; padding:10px 16px; border:1px solid var(--border); border-radius:50px; font-size:14px; font-family:inherit; color:var(--text); background:#fff; outline:none; }
     .ep-private-panel-add input:focus { border-color:var(--text); }
+    .ep-private-panel-body .page-field-error { margin-bottom:12px; }
     .ep-private-panel-list { display:flex; flex-direction:column; }
     .ep-private-panel-item { display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid var(--border); }
     .ep-private-panel-item:last-child { border-bottom:none; }
@@ -5313,9 +5314,10 @@
       </div>
       <div class="ep-private-panel-body">
         <div class="ep-private-panel-add">
-          <input type="text" id="epPrivateUrlModalInput" placeholder="https://example.com/your-page" onkeydown="if(event.key==='Enter'){event.preventDefault();addPrivateUrlFromPanel();}">
+          <input type="text" id="epPrivateUrlModalInput" placeholder="https://example.com/your-page" oninput="clearPrivateUrlError()" onkeydown="if(event.key==='Enter'){event.preventDefault();addPrivateUrlFromPanel();}">
           <button class="btn-topbar-primary" onclick="addPrivateUrlFromPanel()">Add</button>
         </div>
+        <div class="page-field-error" id="epPrivateUrlError">Add a reference URL to continue.</div>
         <div class="ep-private-panel-list" id="epPrivateUrlPanelList"></div>
       </div>
     </div>
@@ -8713,13 +8715,20 @@
       showToast('Embed code copied');
     }
 
+    function clearPrivateUrlError() {
+      var input = document.getElementById('epPrivateUrlModalInput');
+      var err = document.getElementById('epPrivateUrlError');
+      if (input) input.style.borderColor = '';
+      if (err) err.classList.remove('show');
+    }
+
     function openPrivateUrlPanel() {
       var panel = document.getElementById('epPrivateUrlPanel');
       renderPrivateUrlPanelList();
       panel.classList.add('show');
       var input = document.getElementById('epPrivateUrlModalInput');
       input.value = '';
-      input.style.borderColor = '';
+      clearPrivateUrlError();
       setTimeout(function() { input.focus(); }, 0);
     }
 
@@ -8731,11 +8740,11 @@
       var input = document.getElementById('epPrivateUrlModalInput');
       var val = (input.value || '').trim();
       if (!val) {
-        input.style.borderColor = '#d64545';
-        showToast('Enter a reference URL');
+        input.style.borderColor = '#dc2626';
+        document.getElementById('epPrivateUrlError').classList.add('show');
         return;
       }
-      input.style.borderColor = '';
+      clearPrivateUrlError();
       input.value = '';
       privateRefUrls.push(val);
       renderPrivateUrlPanelList();
