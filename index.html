@@ -3190,15 +3190,14 @@
     }
 
     /* ── Embed Player (Private) ──── */
-    .ep-private-connect { border:1px solid var(--border); border-left:3px solid #34a853; border-radius:12px; padding:24px; background:#fff; margin-bottom:20px; }
+    .ep-private-connect { border:1px solid var(--border); border-radius:12px; padding:24px; background:#fff; margin-bottom:20px; }
     .ep-private-connect-head { display:flex; align-items:center; justify-content:space-between; }
     .ep-private-connect-label { font-size:14px; font-weight:600; color:var(--text); display:flex; align-items:center; gap:4px; }
-    .ep-private-success { display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; border-radius:50%; background:#34a853; flex:none; }
+    .ep-private-connect-desc { font-size:13px; color:var(--text-secondary); margin-top:8px; line-height:1.5; }
     .ep-private-setup { border:1px solid var(--border); border-radius:12px; padding:24px; background:#fff; }
+    .ep-private-setup-head { display:flex; align-items:center; justify-content:space-between; }
     .ep-private-setup-label { font-size:15px; font-weight:600; color:var(--text); display:flex; align-items:center; gap:4px; }
-    .ep-private-setup-label .req { color:#dc2626; font-weight:600; margin-left:1px; }
     .ep-private-setup-desc { font-size:13px; color:var(--text-secondary); margin-top:8px; line-height:1.5; }
-    .ep-private-setup-action { margin-top:16px; }
     .ep-private-panel { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:1000; align-items:center; justify-content:center; padding:24px; }
     .ep-private-panel.show { display:flex; }
     .ep-private-panel-card { background:#fff; border-radius:12px; box-shadow:0 8px 32px rgba(0,0,0,0.15); width:100%; max-width:560px; max-height:80vh; display:flex; flex-direction:column; overflow:hidden; }
@@ -5279,20 +5278,21 @@
           <div class="theme-showcase-preview">
             <!-- Setup state: Reference URL required before player/embed appear -->
             <div class="ep-private-setup" id="epPrivateSetup">
-              <div class="ep-private-setup-label">Reference URL <span class="req">*</span> <span class="info-icon" tabindex="0"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg><span class="info-tooltip">Reference URL is the URL of the web page which you will embed your podcast.</span></span></div>
-              <div class="ep-private-setup-desc">Add the URL of the web page where you will embed your podcast. Your player preview and embed code will appear here after you add a reference URL.</div>
-              <div class="ep-private-setup-action">
-                <button class="btn-topbar-primary" onclick="openPrivateUrlPanel()">Add Reference URL</button>
+              <div class="ep-private-setup-head">
+                <div class="ep-private-setup-label">Reference URL</div>
+                <button class="btn-topbar-primary" onclick="openPrivateUrlPanel()">Add</button>
               </div>
+              <div class="ep-private-setup-desc">Add the URL of the page where you'll embed this player to use the embed code.</div>
             </div>
 
             <!-- Configured state -->
             <div id="epPrivateConfigured" style="display:none;">
               <div class="ep-private-connect">
                 <div class="ep-private-connect-head">
-                  <div class="ep-private-connect-label"><span class="ep-private-success" aria-hidden="true"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span> Reference URL <span class="info-icon" tabindex="0"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg><span class="info-tooltip">Reference URL is the URL of the web page which you will embed your podcast.</span></span></div>
+                  <div class="ep-private-connect-label">Reference URL</div>
                   <button class="btn-topbar-primary" id="epPrivateAddBtn" onclick="openPrivateUrlPanel()">Manage</button>
                 </div>
+                <div class="ep-private-connect-desc">Add the URL of the page where you'll embed this player to use the embed code.</div>
               </div>
 
               <div class="preview-wrap" style="height:auto;overflow:visible;">
