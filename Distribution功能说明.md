@@ -1,8 +1,3 @@
----
-title: Distribution 功能说明
----
-
-
 # Distribution 模块功能说明
 
 > 本文档说明 Podbean 后台 **Distribution（分发）** 菜单及其下属子菜单页面的功能。
@@ -25,9 +20,22 @@ title: Distribution 功能说明
 | 5 | Social Share | `page-social-share` | 社交平台自动分享 |
 | 6 | Podcast Website | `page-podcast-website` | 播客网站管理 |
 | 7 | Embed Player | `page-embeddable-player` | 多集嵌入播放器 |
+| 8 | Embed Player (private) | `page-embeddable-player-private` | 私有频道专用嵌入播放器（Reference URL 必填） |
 
 > 说明：从 **Podcast Apps** 平台列表点击部分平台卡片，会进入独立的提交子页面：
 > **Apple Podcasts 提交页**、**Spotify 提交页**、**YouTube 提交页**、**Amazon Music/Audible 提交页**、**iHeartRadio 提交页**、**Player FM 提交页**、**Listen Notes 提交页**、**Podchaser 提交页**、**Boomplay 提交页**（见下文）。**Podbean App** 为宿主平台，卡片常驻显示"已上线"，点击进入 **Podbean App 信息页**（下载推荐 + Badge 推广代码生成器）。
+
+#### 私有频道（Private Channel）模式
+
+在**私有频道（Private Channel）**场景下，Distribution 子菜单项会变化：
+
+- **不含** **Social Share** 与 **Podcast Apps** 两个选项。
+- **保留** **Podcast Website**（网站）选项。
+- **Embed Player** 的出现由「bizadmin → Settings → Advanced Options → Content」下的 **Private Player** 开关控制，**默认 Disable**：
+  - **Disable** → Distribution 下不出现 Embed Player。
+  - **Enable** → Distribution 下出现 Embed Player，其下有两个子选项：
+    - **Request user login to access** → 与公开 Embed Player 完全一致（普通嵌入播放器）。
+    - **Don't request user login and limit access with Reference URL** → 出现 **Embed Player (private)**（Reference URL 必填的私有嵌入播放器，详见第 8 节）。
 
 ---
 
@@ -228,6 +236,36 @@ title: Distribution 功能说明
       - **Customize CSS**（默认收起）：点击展开文本框，可输入自定义 CSS 进一步定制播放器；Reset to default 会一并清空。
   - 修改后实时更新预览；点击 **Save** 保存并返回。
   - 离开时若存在未保存改动，弹出 **Leave/Stay 确认对话框**（`epConfirmOverlay`），防止误丢改动。
+
+---
+
+### 8. Embed Player (private)（私有频道嵌入播放器）
+
+**定位**：私有频道（Private Channel）专用的嵌入播放器，视觉与布局同公开 **Embed Player** 页（单栏 `.theme-showcase`），但 **Reference URL 是必填前置步骤**——未填写时不显示播放器预览与嵌入代码。
+
+**出现条件**：由「bizadmin → Settings → Advanced Options → Content」下的 **Private Player** 开关控制——**Disable** 时不出现；**Enable** 后若选择 **Request user login to access** 则走公开 Embed Player，若选择 **Don't request user login and limit access with Reference URL** 才出现本页（Reference URL 必填样式）。
+
+- **侧边栏菜单项**：`Embed Player (private)`（`page-embeddable-player-private`），位于 `Embed Player` 之后。
+- **页面标题/描述**与 Embed Player 页完全一致：「Embed Player」/「Embed a multi-episode player on your site.」（仅菜单项名称特殊化，页面 toolbar 不特殊化）。
+- 单栏布局 `theme-showcase > theme-showcase-preview`，内容由 `refreshPrivatePlayerState()` 按 `privateRefUrls`（JS 数组，单一数据源）是否为空切**两态**。
+
+**空态 `#epPrivateSetup`**（未填任何 Reference URL）：
+- 一张 `.ep-private-setup` 卡片：head 为 label「Reference URL」左 + 主按钮「Add」右；下方一句 desc「Add the URL of the page where you'll embed this player to use the embed code.」。
+- 点击 **Add** 打开 Reference URLs 弹窗。此状态下播放器预览与嵌入代码整块隐藏（Reference URL 未填即不出现）。
+
+**已填态 `#epPrivateConfigured`**（≥1 个 Reference URL）：
+- 顶部 `.ep-private-connect` 卡片（与空态卡片同框同位置，避免切换时 URL 区域跳动）：head 为 label「Reference URL」左 + 主按钮「Manage」右；下方同一句 desc。
+- 卡片下方：播放器预览（`renderVisualPlayer('epPlayerPrivate')`）→ **View Embed Code** 折叠 → **Copy Embed Code** + **Customize Your Player ↗**（复用 `openEpCustomization()`，恒显）。
+
+**Reference URLs 弹窗 `epPrivateUrlPanel`**（居中模态，标题「Reference URLs」+ × 关闭，点遮罩或 × 关闭）：
+- 输入框（`epPrivateUrlModalInput`）+ **Add** 按钮；下方 URL 列表：每项为浅灰圆角块（`#f7f8fa`），内含地球图标 + URL 文案（主文字色）+ **Delete** 胶囊按钮（`border-radius:50px`，默认灰描边 `#e0e3e6`/灰字 `#6b7280`，hover 变红 `#dc2626` + 淡红底）；空列表显示「No reference URLs yet.」。
+- 添加 `addPrivateUrlFromPanel()`：
+  - 空输入 → 报错「Add a reference URL to continue.」；非 URL（正则 `/^https?:\/\/.+/i`）→ 报错「Enter a valid URL.」；报错样式同 create page 标题（`.page-field-error` + `.show` + 输入框描边 `#dc2626`），输入时 `clearPrivateUrlError()` 清除。
+  - 首次添加（添加前 `privateRefUrls` 为空）→ 关闭弹窗、展示已填态；之后 Manage 里连续添加不关闭（留在弹窗继续加）。
+  - 添加成功后清空输入框并 toast「Reference URL added」。
+- 删除 `deletePrivateUrl(idx)`：一般留在弹窗连续删；删光最后一个时关闭弹窗并回到空态；toast「Reference URL removed」。
+
+**联动与波形修复**：`switchSubPage` 切到 private 页时调用 `renderVisualPlayer('epPlayerPrivate')` + `refreshPrivatePlayerState()`；`updatePlayer()` 在 private 页可见时同步重渲染预览 + 重生成 embed code。`renderVisualPlayer` 按 containerId 区分 suffix（`epPlayerCustom`→`Custom`、`epPlayerPrivate`→`Private`）；`drawWaveform` 拆出 `drawWaveformInto(canvas)` 画单个 canvas；`togglePlaying` 的 ids 数组补 private 一对，故 private 预览的波形/播放按钮正常显示。
 
 ---
 
