@@ -290,7 +290,7 @@
   <div class="inner">
     <div class="kicker">Product documentation</div>
     <h1>Stats 页面功能文档</h1>
-    <p class="sub">播客数据统计与分析看板的功能说明，涵盖总览、单集分析与报告三大模块，以及各页面上的时间选择器、筛选器、数据计算逻辑与导出功能。</p>
+    <p class="sub">播客数据统计与分析看板的功能说明，以单页 5 个 Tab（Overview / Performance / Trends / Engagement / Report）组织，涵盖时间选择器、筛选器、数据计算逻辑与导出功能。</p>
     <div class="wave" id="wave" aria-hidden="true"></div>
   </div>
 </header>
@@ -308,12 +308,11 @@
       <li><a class="lvl2" href="#ov-boards">3.4 各数据板块逻辑</a></li>
       <li><a class="lvl2" href="#ov-source">3.5 Source 归因逻辑</a></li>
       <li><a class="lvl2" href="#ov-controls">3.6 页面控件与导出</a></li>
-      <li><a href="#module-episodes">4 · Episodes 单集</a></li>
-      <li><a class="lvl2" href="#performance">4.1 Performance（单集表现）</a></li>
-      <li><a class="lvl2" href="#podbean-engagement">4.2 Podbean Engagement（听众互动）</a></li>
-      <li><a class="lvl2" href="#trends">4.3 Trends（下载趋势）</a></li>
-      <li><a href="#module-reports">5 · Reports 报告</a></li>
-      <li><a href="#todo">6 · 补充说明</a></li>
+      <li><a href="#module-performance">4 · Performance 单集表现</a></li>
+      <li><a href="#module-trends">5 · Trends 下载趋势</a></li>
+      <li><a href="#module-engagement">6 · Engagement 互动</a></li>
+      <li><a href="#module-reports">7 · Report 报告</a></li>
+      <li><a href="#todo">8 · 补充说明</a></li>
     </ol>
   </nav>
 
@@ -321,47 +320,45 @@
 
     <section class="doc-section" id="overview-page">
       <h2><span class="sec-num">01</span>页面概述</h2>
-      <p>Stats 页面是播客数据统计与分析看板，用于集中展示播客的收听表现、互动情况与趋势变化。页面在整体结构上分为三大模块：</p>
+      <p>Stats 页面（Statistics，数据页面）是播客数据统计与分析看板。主菜单 Statistics 下不再设置子菜单，页面以「一个页面 + 5 个 Tab」的方式组织，5 个 Tab 分别为：</p>
       <ul>
         <li><strong>Overview（总览）</strong>：以图表和指标卡片的形式，快速查看整体表现与趋势。</li>
-        <li><strong>Episodes（单集）</strong>：按单集维度深入分析表现、互动与趋势，包含 Performance、Podbean Engagement、Trends 三个视图。</li>
-        <li><strong>Reports（报告）</strong>：以表格和明细数据的形式，查看底层原始数据与可下载的报告。</li>
+        <li><strong>Performance（单集表现）</strong>：按单集维度深入分析收听表现。</li>
+        <li><strong>Trends（下载趋势）</strong>：以时间序列图表展示下载量随时间的变化趋势。</li>
+        <li><strong>Engagement（互动）</strong>：查看听众在 Podbean 内的互动（收听行为）。</li>
+        <li><strong>Report（报告）</strong>：以表格和明细数据的形式，查看底层原始数据与可下载的报告。</li>
       </ul>
-      <p>页面中，名称带有 "Podbean" 的视图（如 Podbean Engagement、Podbean App User Retention）仅展示 Podbean 的数据；其余视图展示各平台的汇总数据。</p>
+      <p>页面中，Engagement（互动）与 Podbean App User Retention（用户留存）等视图仅展示 Podbean 的数据；其余视图展示各平台的汇总数据。</p>
       <p>此外，页面中的各列表在数据达到一定数量时会自动分页；各列表当前不支持排序交互。</p>
       <div class="note">不同套餐（Free / Business / Network 等）可用的功能不同，本文在相应位置标注了套餐差异。</div>
     </section>
 
     <section class="doc-section" id="navigation">
       <h2><span class="sec-num">02</span>导航结构</h2>
-      <pre class="tree">Stats
-├── <span class="hl">Overview</span>（总览）
-│   ├── 时间选择器
-│   ├── 指标卡片：Downloads / Listeners / New Followers / Interaction
-│   └── 数据板块：受众来源 / 最活跃时段 / 用户留存 / Podcast Trends / Latest Episodes / Top Episodes 等
-├── <span class="hl">Episodes</span>（单集）
-│   ├── Performance（单集表现）
-│   │   ├── Compare（对比基准）选择器
-│   │   └── Days After Release（发布后 N 天）选择器
-│   ├── Podbean Engagement（听众互动）
-│   │   ├── Select Episodes（选择单集）
-│   │   └── Time（时间范围）选择器
-│   └── Trends（下载趋势）
-│       ├── Selected Episodes（选择单集）
-│       ├── Time（时间范围）选择器
-│       └── View by Episodes / View by Date
-└── <span class="hl">Reports</span>（报告）
-    ├── 报告类型下拉框：Raw Data / Engagement Raw Data / Engagement Summary / Podcast Performance Snapshot
-    │   ├── Raw Data：时间选择（按年）+ Add Filter
-    │   ├── Engagement Raw Data：时间选择（按年）
-    │   ├── Engagement Summary：仅 All time
-    │   └── Podcast Performance Snapshot（播客表现快照）
-    └── 按月报告列表（每项右侧 Download）</pre>
+      <pre class="tree">Statistics（数据页面，单页，无子菜单）
+└── 5 个 Tab
+    ├── <span class="hl">Overview</span>（总览）
+    │   ├── 时间选择器
+    │   ├── 指标卡片：Downloads / Listeners / New Followers / Interaction
+    │   └── 数据板块：受众来源 / 最活跃时段 / 用户留存 / Podcast Trends / Latest Episodes / Top Episodes 等
+    ├── <span class="hl">Performance</span>（单集表现）
+    │   ├── Compare（对比基准）选择器
+    │   └── Days After Release（发布后 N 天）选择器
+    ├── <span class="hl">Trends</span>（下载趋势）
+    │   ├── Selected Episodes（选择单集）
+    │   ├── Time（时间范围）选择器
+    │   └── View by Episodes / View by Date
+    ├── <span class="hl">Engagement</span>（互动）
+    │   ├── Select Episodes（选择单集）
+    │   └── Time（时间范围）选择器
+    └── <span class="hl">Report</span>（报告）
+        ├── 报告类型下拉框：Raw Data / Engagement Raw Data / Engagement Summary / Podcast Performance Snapshot
+        └── 按月报告列表（每项右侧 Download）</pre>
     </section>
 
     <section class="doc-section" id="module-overview">
-      <h2><span class="sec-num">03</span>Overview（总览）模块</h2>
-      <p>总览模块是进入 Stats 页面后的默认视图，用于以可视化的方式快速了解播客的整体数据表现。左上方提供时间选择器，用于控制整页数据的时间范围。</p>
+      <h2><span class="sec-num">03</span>Overview（总览）</h2>
+      <p>总览 Tab 是进入 Stats 页面后的默认视图，用于以可视化的方式快速了解播客的整体数据表现。左上方提供时间选择器，用于控制整页数据的时间范围。</p>
 
       <h3 id="ov-time">3.1 时间选择器</h3>
       <div class="table-wrap">
@@ -485,9 +482,9 @@
       <ul>
         <li>该板块为左右切换的两个 Tab：<strong>Latest Episodes</strong>（最新单集）与 <strong>Top Episodes</strong>（热门单集），两者各展示 5 个 episodes。</li>
         <li>发布时间按照 GMT 时区展示。（注：Episode List 页面的发布时间按用户账号设置的时区展示，因此两个页面的 episode 发布日期可能因时区不同而不同。）</li>
-        <li><strong>Latest Episodes</strong> 的 <strong>Compare Performance</strong> 按钮：点击跳转至 Statistics → Episodes → Performance 页面，选中该 5 个 episodes，时间默认选为 <strong>7 Days After Release</strong>。</li>
-        <li><strong>Top Episodes</strong> 的 <strong>View More</strong> 按钮：点击跳转至 Statistics → Episodes → Trends 页面。</li>
-        <li>点击 episode title 跳转至 Statistics → Episodes → Trends 页面，选中该 episode，时间选择器与 Overview 页面所选时间段保持一致。</li>
+        <li><strong>Latest Episodes</strong> 的 <strong>Compare Performance</strong> 按钮：点击跳转至 Statistics 页面的 <strong>Performance</strong> Tab，选中该 5 个 episodes，时间默认选为 <strong>7 Days After Release</strong>。</li>
+        <li><strong>Top Episodes</strong> 的 <strong>View More</strong> 按钮：点击跳转至 Statistics 页面的 <strong>Trends</strong> Tab。</li>
+        <li>点击 episode title 跳转至 Statistics 页面的 <strong>Trends</strong> Tab，选中该 episode，时间选择器与 Overview 所选时间段保持一致。</li>
       </ul>
 
       <h3 id="ov-source">3.5 Source 归因逻辑（自 2025-06-09 起应用）</h3>
@@ -525,11 +522,8 @@
       </ul>
     </section>
 
-    <section class="doc-section" id="module-episodes">
-      <h2><span class="sec-num">04</span>Episodes（单集）模块</h2>
-      <p>单集模块用于按「单集」维度深入分析播客数据，包含 Performance、Podbean Engagement、Trends 三个视图。</p>
-
-      <h3 id="performance">4.1 Performance（单集表现）</h3>
+    <section class="doc-section" id="module-performance">
+      <h2><span class="sec-num">04</span>Performance（单集表现）</h2>
       <p>展示播客单集层面的收听表现。</p>
       <p><strong>主要功能：</strong></p>
       <ul>
@@ -599,9 +593,71 @@
         <li>Episode download 有数值、average 没有（断点）时，compare 的百分比也展示为 "-"。</li>
       </ul>
       <div class="note">Free 用户不提供 Performance 数据。</div>
+    </section>
 
-      <h3 id="podbean-engagement">4.2 Podbean Engagement（听众互动）</h3>
-      <p>用于查看听众在 Podbean 平台内的互动（收听行为）表现的独立视图。</p>
+    <section class="doc-section" id="module-trends">
+      <h2><span class="sec-num">05</span>Trends（下载趋势）</h2>
+      <p>以图表形式展示下载量随时间的变化趋势。</p>
+      <p><strong>主要功能：</strong></p>
+      <ul>
+        <li>左侧提供 <strong>Selected Episodes（选择单集）</strong>：点击打开 Select Episodes 弹窗，弹窗上方有 Search Episodes 搜索框，下方出现 All Episodes 及单个 episode 标题（从新到老排列）供选择（列表不含日期、不支持全选）。</li>
+        <li>右侧提供 <strong>Time（时间范围）</strong> 选择器。</li>
+        <li>下方提供 <strong>View by Episodes / View by Date</strong> 的左右 Tab，用于切换按单集或按日期查看趋势；两个 Tab 视图左下角都有导出按钮。</li>
+      </ul>
+
+      <p><strong>Time（时间范围）下拉选项：</strong></p>
+      <ul>
+        <li>付费用户：Today / Last 7 Days / Last 30 Days / 本月 / 上个月 / 上上个月 / Custom (within 24 months) / All Time
+          <ul>
+            <li>Last 7 Days / Last 30 Days 不包含今天。</li>
+            <li>All Time：从 blog 创建时间开始。</li>
+          </ul>
+        </li>
+        <li>免费用户：不展示 Custom (within 24 months) / All Time，其他选项可展示。</li>
+      </ul>
+
+      <p><strong>Download 板块的环比：</strong></p>
+      <ul>
+        <li>Time A-Time B VS Time C-Time D：Time C 最早提供到两年前，超过两年不提供环比信息。</li>
+        <li>三种为 0 的情况：
+          <ul>
+            <li>环比前后数据均 = 0，百分比为 +0%。</li>
+            <li>当前有数据、环比时间数据 = 0，百分比为 +100%。</li>
+            <li>当前数据 = 0、环比时间有数据，百分比为 -100%。</li>
+          </ul>
+        </li>
+      </ul>
+
+      <p><strong>Avg. Downloads 的计算：</strong></p>
+      <ul>
+        <li>不足整月时，取大值计算。</li>
+        <li>所选范围内如果有没有 download 的情况，不会扣除，依旧算进除数里。</li>
+      </ul>
+
+      <p><strong>柱形图时间显示规则：</strong></p>
+      <ul>
+        <li>用户选择的时间在 3 个月内：按照天展示数据。</li>
+        <li>超过 3 个月且在 24 个月内：按照月展示数据。</li>
+        <li>超过 24 个月：按照年展示数据。</li>
+      </ul>
+
+      <p><strong>柱形图数据逻辑：</strong></p>
+      <ul>
+        <li>All episode &gt; all time：从 blog 创建时间显示和计算数据。</li>
+        <li>单个 episode、all time：从 file 发布时间显示和计算数据。</li>
+        <li>其他时间选择：若 time range 内 episode 还未发布，则数据为 0，时间轴仍按照时间选择器的 range 来。</li>
+      </ul>
+
+      <p><strong>All episode &gt; View by episode：</strong></p>
+      <ul>
+        <li>根据 file 查数据；多个 episode 用了同一个 file 则展示最新的 episode。</li>
+      </ul>
+      <div class="note">Free 用户可查看 All episode 数据，不可查看单个 episode 数据。</div>
+    </section>
+
+    <section class="doc-section" id="module-engagement">
+      <h2><span class="sec-num">06</span>Engagement（互动）</h2>
+      <p>用于查看听众在 Podbean 平台内的互动（收听行为）表现的视图。</p>
       <p><strong>主要功能：</strong></p>
       <ul>
         <li>左侧提供 <strong>Select Episodes（选择单集）</strong>：点击打开 Select Episodes 弹窗，弹窗上方有 Search Episodes 搜索框，下方按「从新到老」排列单个 episode 的标题供选择（列表不含日期、不支持全选）。
@@ -610,6 +666,7 @@
           </ul>
         </li>
         <li>右侧提供 <strong>Time（时间范围）</strong> 选择器。</li>
+        <li>左下角提供 <strong>Export CSV &gt;</strong> 文字链接，点击跳转到 Report 的 Engagement Raw Data。</li>
       </ul>
 
       <p><strong>Time（时间范围）下拉选项：</strong></p>
@@ -670,72 +727,14 @@
         <li>执行时间：Session 数据与 Listeners on Podbean 数量同步更新，平均每 10 分钟执行一次；Engaged Listener 每小时的第 17 分执行。</li>
       </ul>
       <div class="note">Free 用户不提供 engagement 数据。</div>
-
-      <h3 id="trends">4.3 Trends（下载趋势）</h3>
-      <p>以图表形式展示下载量随时间的变化趋势。</p>
-      <p><strong>主要功能：</strong></p>
-      <ul>
-        <li>左侧提供 <strong>Selected Episodes（选择单集）</strong>：点击打开 Select Episodes 弹窗，弹窗上方有 Search Episodes 搜索框，下方出现 All Episodes 及单个 episode 标题（从新到老排列）供选择（列表不含日期、不支持全选）。</li>
-        <li>右侧提供 <strong>Time（时间范围）</strong> 选择器。</li>
-        <li>下方提供 <strong>View by Episodes / View by Date</strong> 的左右 Tab，用于切换按单集或按日期查看趋势；两个 Tab 视图左下角都有导出按钮。</li>
-      </ul>
-
-      <p><strong>Time（时间范围）下拉选项：</strong></p>
-      <ul>
-        <li>付费用户：Today / Last 7 Days / Last 30 Days / 本月 / 上个月 / 上上个月 / Custom (within 24 months) / All Time
-          <ul>
-            <li>Last 7 Days / Last 30 Days 不包含今天。</li>
-            <li>All Time：从 blog 创建时间开始。</li>
-          </ul>
-        </li>
-        <li>免费用户：不展示 Custom (within 24 months) / All Time，其他选项可展示。</li>
-      </ul>
-
-      <p><strong>Download 板块的环比：</strong></p>
-      <ul>
-        <li>Time A-Time B VS Time C-Time D：Time C 最早提供到两年前，超过两年不提供环比信息。</li>
-        <li>三种为 0 的情况：
-          <ul>
-            <li>环比前后数据均 = 0，百分比为 +0%。</li>
-            <li>当前有数据、环比时间数据 = 0，百分比为 +100%。</li>
-            <li>当前数据 = 0、环比时间有数据，百分比为 -100%。</li>
-          </ul>
-        </li>
-      </ul>
-
-      <p><strong>Avg. Downloads 的计算：</strong></p>
-      <ul>
-        <li>不足整月时，取大值计算。</li>
-        <li>所选范围内如果有没有 download 的情况，不会扣除，依旧算进除数里。</li>
-      </ul>
-
-      <p><strong>柱形图时间显示规则：</strong></p>
-      <ul>
-        <li>用户选择的时间在 3 个月内：按照天展示数据。</li>
-        <li>超过 3 个月且在 24 个月内：按照月展示数据。</li>
-        <li>超过 24 个月：按照年展示数据。</li>
-      </ul>
-
-      <p><strong>柱形图数据逻辑：</strong></p>
-      <ul>
-        <li>All episode &gt; all time：从 blog 创建时间显示和计算数据。</li>
-        <li>单个 episode、all time：从 file 发布时间显示和计算数据。</li>
-        <li>其他时间选择：若 time range 内 episode 还未发布，则数据为 0，时间轴仍按照时间选择器的 range 来。</li>
-      </ul>
-
-      <p><strong>All episode &gt; View by episode：</strong></p>
-      <ul>
-        <li>根据 file 查数据；多个 episode 用了同一个 file 则展示最新的 episode。</li>
-      </ul>
-      <div class="note">Free 用户可查看 All episode 数据，不可查看单个 episode 数据。</div>
     </section>
 
     <section class="doc-section" id="module-reports">
-      <h2><span class="sec-num">05</span>Reports（报告）模块</h2>
-      <p>报告模块用于下载播客数据报告。页面顶部提供报告类型下拉框，下方按月列出报告，每份报告右侧都有下载按钮。</p>
+      <h2><span class="sec-num">07</span>Report（报告）</h2>
+      <p>报告 Tab 用于下载播客数据报告。页面顶部提供报告类型下拉框，下方按月列出报告，每份报告右侧都有下载按钮。</p>
 
-      <h3 id="report-type">5.1 报告类型下拉框</h3>
-      <p>Reports 页面顶部有一个下拉框，用于选择要查看/下载的报告类型，包含四个选项：</p>
+      <h3 id="report-type">7.1 报告类型下拉框</h3>
+      <p>Report 页面顶部有一个下拉框，用于选择要查看/下载的报告类型，包含四个选项：</p>
       <ul>
         <li><strong>Raw Data（原始数据）</strong>：未经聚合的底层明细数据。</li>
         <li><strong>Engagement Raw Data（互动原始数据）</strong>：互动相关的明细数据。</li>
@@ -757,7 +756,7 @@
         </table>
       </div>
 
-      <h3 id="raw-data">5.2 Raw Data（原始数据）</h3>
+      <h3 id="raw-data">7.2 Raw Data（原始数据）</h3>
       <ul>
         <li>右侧提供时间选择器（以年为单位）。</li>
         <li>时间选择器旁提供 <strong>Add Filter</strong> 按钮，点击打开 Download Report Filter 弹窗，内容如下：</li>
@@ -769,24 +768,25 @@
         <li>备注：The selected filters will be applied to the future generated reports and the raw data report downloaded via API.</li>
       </ul>
 
-      <h3 id="engagement-raw">5.3 Engagement Raw Data（互动原始数据）</h3>
+      <h3 id="engagement-raw">7.3 Engagement Raw Data（互动原始数据）</h3>
       <ul>
         <li>右侧提供时间选择器（以年为单位）。</li>
       </ul>
 
-      <h3 id="engagement">5.4 Engagement Summary（互动摘要）</h3>
+      <h3 id="engagement">7.4 Engagement Summary（互动摘要）</h3>
       <ul>
         <li>右侧时间选择器只有一个选项：<strong>All time</strong>。</li>
       </ul>
 
-      <h3 id="snapshot">5.5 Podcast Performance Snapshot（播客表现快照）</h3>
+      <h3 id="snapshot">7.5 Podcast Performance Snapshot（播客表现快照）</h3>
       <ul>
+        <li>该报告类型默认不展示，需要在 <strong>bo company</strong> 中 <strong>Enable analytic report</strong> 后，才会在 Report 页面出现。</li>
         <li>该报告类型仅对 <strong>Network 套餐及以上（Network plan and above）</strong> 用户开放。</li>
         <li>以「快照」形式展示播客表现在某一时间点或时间段内的整体情况，适合用于定期汇报、周报/月报或对外分享。</li>
         <li>右侧提供时间选择器（以年为单位）。</li>
       </ul>
 
-      <h3 id="download">5.6 下载报告</h3>
+      <h3 id="download">7.6 下载报告</h3>
       <ul>
         <li>选择报告类型与时间后，下方按月列出报告，每个报告月份右侧都有一个 <strong>Download</strong> 按钮，点击即可下载对应报告。</li>
         <li>下载的文件格式为 <strong>CSV</strong>。</li>
@@ -795,8 +795,8 @@
     </section>
 
     <section class="doc-section" id="todo">
-      <h2><span class="sec-num">06</span>补充说明</h2>
-      <p>本文档完整梳理了 Stats 页面当前实现的功能，涵盖总览（Overview）、单集（Episodes）与报告（Reports）三大模块，以及各页面的时间选择器、筛选器、数据计算逻辑与数据导出功能，并标注了不同套餐（Free / Business / Network 等）的功能差异。</p>
+      <h2><span class="sec-num">08</span>补充说明</h2>
+      <p>本文档完整梳理了 Stats 页面当前实现的功能，涵盖 Overview、Performance、Trends、Engagement 与 Report 五个 Tab，以及各 Tab 上的时间选择器、筛选器、数据计算逻辑与数据导出功能，并标注了不同套餐（Free / Business / Network 等）的功能差异。</p>
     </section>
 
     <div class="footer-note">如页面功能有更新，请以最新版本为准。</div>
